@@ -1,0 +1,49 @@
+      {
+        "name": "Chat",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "聊天对象名称"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "头像URL"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "single",
+              "group"
+            ],
+            "default": "single",
+            "description": "聊天类型"
+          },
+          "persona": {
+            "type": "string",
+            "description": "AI人设"
+          },
+          "my_persona": {
+            "type": "string",
+            "description": "用户人设"
+          },
+          "theme": {
+            "type": "string",
+            "default": "default",
+            "description": "聊天主题"
+          },
+          "background": {
+            "type": "string",
+            "description": "聊天背景"
+          },
+          "last_message": {
+            "type": "string",
+            "description": "最后一条消息"
+          },
+          "last_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最后消息时间"
+          }
+        }
+      }

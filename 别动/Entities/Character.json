@@ -1,0 +1,23 @@
+{
+  "name": "Character",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "角色名称"
+    },
+    "persona": {
+      "type": "string",
+      "description": "角色人设"
+    },
+    "avatar": {
+      "type": "string",
+      "description": "角色头像"
+    },
+    "pat_suffix": {
+      "type": "string",
+      "description": "拍一拍后缀"
+    }
+  },
+  "required": ["name", "persona"]
+}

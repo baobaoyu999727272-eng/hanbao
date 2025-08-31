@@ -1,0 +1,34 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "chat_id": {
+      "type": "string",
+      "description": "所属聊天ID"
+    },
+    "sender": {
+      "type": "string",
+      "enum": ["user", "ai"],
+      "description": "发送者"
+    },
+    "content": {
+      "type": "string",
+      "description": "消息内容"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["text", "image", "voice", "transfer", "system"],
+      "default": "text",
+      "description": "消息类型"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "图片URL"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "额外数据"
+    }
+  },
+  "required": ["chat_id", "sender", "content"]
+}
