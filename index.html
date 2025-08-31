@@ -1,209 +1,552 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>HANBAO — 微信模拟与 API 设置 演示</title>
     <style>
-      :root{ --accent:#34c759; --bg:#f4f7fb }
-      html,body{height:100%;margin:0}
-      body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Noto Sans SC",Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#eef4fb);display:flex;align-items:center;justify-content:center}
-      .phone{width:390px;max-width:92vw;border-radius:36px;background:#07101a;color:#e6eef8;box-shadow:0 20px 60px rgba(2,6,23,0.45);overflow:hidden}
-      .notch{height:32px;background:#080809;border-top-left-radius:14px;border-top-right-radius:14px}
-      .screen{padding:12px}
-      .header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
-      .title{font-weight:700}
-      .app-grid{display:flex;gap:10px;justify-content:center;padding:10px}
-      .app-icon{width:64px;height:78px;text-align:center;color:#dfe7f3}
-      .icon-bg{width:56px;height:56px;border-radius:12px;overflow:hidden;background:#08131a;margin:0 auto 6px;display:flex;align-items:center;justify-content:center}
-      .messages{max-height:380px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
-      .msg-row{display:flex}
-      .msg-row.me{justify-content:flex-end}
-      .bubble{padding:8px 12px;border-radius:16px;max-width:72%;box-shadow:0 6px 18px rgba(0,0,0,0.35)}
-      .bubble.you{background:#fff;color:#0b1220;border-bottom-left-radius:6px}
-      .bubble.me{background:linear-gradient(180deg,var(--accent),#2ea84b);color:#fff;border-bottom-right-radius:6px}
-      .input-row{display:flex;gap:8px;padding:10px}
-      input[type="text"]{flex:1;padding:10px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit}
-      button.form-button{background:#0b84ff;color:white;padding:8px 12px;border-radius:10px;border:none;cursor:pointer}
-      .note{font-size:12px;color:#9fb6d6;text-align:center;padding:8px}
-      .settings{display:none;padding:8px}
-      .settings.active,.screen.active{display:block}
-      .form-group{margin-bottom:8px}
-      .form-group label{display:block;font-size:13px;color:#c7d3e6;margin-bottom:6px}
-      .form-group input,.form-group select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit}
-      footer{font-size:12px;color:#9fb6d6;padding:8px;text-align:center}
+      :root {
+        --accent: #34c759;
+        --bg: #f4f7fb;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Noto Sans SC', Arial,
+          sans-serif;
+        background: linear-gradient(180deg, var(--bg), #eef4fb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .phone {
+        width: 390px;
+        max-width: 92vw;
+        border-radius: 36px;
+        background: #07101a;
+        color: #e6eef8;
+        box-shadow: 0 20px 60px rgba(2, 6, 23, 0.45);
+        overflow: hidden;
+      }
+      .notch {
+        height: 32px;
+        background: #080809;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+      }
+      .screen {
+        padding: 12px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+      }
+      .title {
+        font-weight: 700;
+      }
+      .app-grid {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        padding: 10px;
+      }
+      .app-icon {
+        width: 64px;
+        height: 78px;
+        text-align: center;
+        color: #dfe7f3;
+      }
+      .icon-bg {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #08131a;
+        margin: 0 auto 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .messages {
+        max-height: 380px;
+        overflow: auto;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .msg-row {
+        display: flex;
+      }
+      .msg-row.me {
+        justify-content: flex-end;
+      }
+      .bubble {
+        padding: 8px 12px;
+        border-radius: 16px;
+        max-width: 72%;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      }
+      .bubble.you {
+        background: #fff;
+        color: #0b1220;
+        border-bottom-left-radius: 6px;
+      }
+      .bubble.me {
+        background: linear-gradient(180deg, var(--accent), #2ea84b);
+        color: #fff;
+        border-bottom-right-radius: 6px;
+      }
+      .input-row {
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+      }
+      input[type='text'] {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.02);
+        color: inherit;
+      }
+      button.form-button {
+        background: #0b84ff;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+      }
+      .note {
+        font-size: 12px;
+        color: #9fb6d6;
+        text-align: center;
+        padding: 8px;
+      }
+      .settings {
+        display: none;
+        padding: 8px;
+      }
+      .settings.active,
+      .screen.active {
+        display: block;
+      }
+      .form-group {
+        margin-bottom: 8px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        color: #c7d3e6;
+        margin-bottom: 6px;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.02);
+        color: inherit;
+      }
+      footer {
+        font-size: 12px;
+        color: #9fb6d6;
+        padding: 8px;
+        text-align: center;
+      }
     </style>
   </head>
-  <body>
-    <div class="phone" role="application" aria-label="HANBAO Demo Phone">
-      <div class="notch"></div>
-      <div class="screen">
-        <div class="header">
-          <div class="title">HANBAO</div>
-          <div style="display:flex;gap:8px">
-            <button id="btnHome" title="主页" class="form-button">主页</button>
-            <button id="btnChat" title="聊天" class="form-button">聊天</button>
-            <button id="btnSettings" title="设置" class="form-button">设置</button>
-          </div>
-        </div>
-
-        <div id="home-screen" class="screen active">
-          <div style="text-align:center;padding:18px 6px">
-            <div style="font-size:28px">12:00</div>
-            <div style="font-size:12px;color:#9fb6d6">星期一, 1月1日</div>
-            <div style="margin-top:8px;font-weight:700;color:#dfe7f3">HANBAO</div>
-          </div>
-          <div class="app-grid">
-            <div class="app-icon" data-app="wechat">
-              <div class="icon-bg"><img src="https://i.postimg.cc/9Q2g1Y2H/wechat.png" alt="微信" style="width:100%"></div>
-              <div>微信</div>
+  <!DOCTYPE html>
+  <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>HANBAO — 微信模拟与 API 设置 演示</title>
+      <style>
+        :root {
+          --accent: #34c759;
+          --bg: #f4f7fb;
+        }
+        html,
+        body {
+          height: 100%;
+          margin: 0;
+        }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Noto Sans SC', Arial,
+            sans-serif;
+          background: linear-gradient(180deg, var(--bg), #eef4fb);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .phone {
+          width: 390px;
+          max-width: 92vw;
+          border-radius: 36px;
+          background: #07101a;
+          color: #e6eef8;
+          box-shadow: 0 20px 60px rgba(2, 6, 23, 0.45);
+          overflow: hidden;
+        }
+        .notch {
+          height: 32px;
+          background: #080809;
+          border-top-left-radius: 14px;
+          border-top-right-radius: 14px;
+        }
+        .screen {
+          padding: 12px;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 12px;
+        }
+        .title {
+          font-weight: 700;
+        }
+        .app-grid {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          padding: 10px;
+        }
+        .app-icon {
+          width: 64px;
+          height: 78px;
+          text-align: center;
+          color: #dfe7f3;
+        }
+        .icon-bg {
+          width: 56px;
+          height: 56px;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #08131a;
+          margin: 0 auto 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .messages {
+          max-height: 380px;
+          overflow: auto;
+          padding: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .msg-row {
+          display: flex;
+        }
+        .msg-row.me {
+          justify-content: flex-end;
+        }
+        .bubble {
+          padding: 8px 12px;
+          border-radius: 16px;
+          max-width: 72%;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+        .bubble.you {
+          background: #fff;
+          color: #0b1220;
+          border-bottom-left-radius: 6px;
+        }
+        .bubble.me {
+          background: linear-gradient(180deg, var(--accent), #2ea84b);
+          color: #fff;
+          border-bottom-right-radius: 6px;
+        }
+        .input-row {
+          display: flex;
+          gap: 8px;
+          padding: 10px;
+        }
+        input[type='text'] {
+          flex: 1;
+          padding: 10px;
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.02);
+          color: inherit;
+        }
+        button.form-button {
+          background: #0b84ff;
+          color: white;
+          padding: 8px 12px;
+          border-radius: 10px;
+          border: none;
+          cursor: pointer;
+        }
+        .note {
+          font-size: 12px;
+          color: #9fb6d6;
+          text-align: center;
+          padding: 8px;
+        }
+        .settings {
+          display: none;
+          padding: 8px;
+        }
+        .settings.active,
+        .screen.active {
+          display: block;
+        }
+        .form-group {
+          margin-bottom: 8px;
+        }
+        .form-group label {
+          display: block;
+          font-size: 13px;
+          color: #c7d3e6;
+          margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select {
+          width: 100%;
+          padding: 8px;
+          border-radius: 8px;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.02);
+          color: inherit;
+        }
+        footer {
+          font-size: 12px;
+          color: #9fb6d6;
+          padding: 8px;
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="phone" role="application" aria-label="HANBAO Demo Phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="header">
+            <div class="title">HANBAO</div>
+            <div style="display: flex; gap: 8px">
+              <button id="btnHome" title="主页" class="form-button">主页</button>
+              <button id="btnChat" title="聊天" class="form-button">聊天</button>
+              <button id="btnSettings" title="设置" class="form-button">设置</button>
             </div>
-            <div class="app-icon" data-app="notes">
-              <div class="icon-bg">📷</div>
-              <div>相册</div>
+          </div>
+
+          <div id="home-screen" class="screen active">
+            <div style="text-align: center; padding: 18px 6px">
+              <div style="font-size: 28px">12:00</div>
+              <div style="font-size: 12px; color: #9fb6d6">星期一, 1月1日</div>
+              <div style="margin-top: 8px; font-weight: 700; color: #dfe7f3">HANBAO</div>
             </div>
-            <div class="app-icon" data-app="settings">
-              <div class="icon-bg">⚙️</div>
-              <div>设置</div>
-            </div>
-          </div>
-          <div class="note">项目仓库：<a href="https://github.com/baobaoyu999727272-eng/baobaoyu-xiaoshouji" target="_blank" rel="noreferrer">baobaoyu-xiaoshouji</a></div>
-        </div>
-
-        <div id="chat-screen" class="screen">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0"><strong>AI 聊天</strong></div>
-          <div id="messages" class="messages">
-            <div class="msg-row you"><div class="bubble you">你好，我是 AI 助手。</div></div>
-          </div>
-          <div class="input-row">
-            <input id="inputBox" type="text" placeholder="输入消息..." aria-label="消息输入">
-            <button id="sendBtn" class="form-button">发送</button>
-          </div>
-        </div>
-
-        <div id="settings-screen" class="settings">
-          <div style="font-weight:600;margin-bottom:8px">API 设置</div>
-          <div class="form-group">
-            <label>中转站地址</label>
-            <input id="proxyUrl" placeholder="https://your-proxy.example.com">
-          </div>
-          <div class="form-group">
-            <label>API Key（仅测试）</label>
-            <input id="apiKey" placeholder="sk-... 或 Gemini token">
-          </div>
-          <div class="form-group">
-            <label>模型</label>
-            <input id="model" placeholder="gpt-4o 或 text-bison">
-          </div>
-          <div style="display:flex;gap:8px">
-            <button id="saveApiBtn" class="form-button">保存</button>
-            <button id="testApiBtn" class="form-button" style="background:#06b6d4">测试</button>
-          </div>
-          <div id="apiStatus" class="note" style="padding-top:6px"></div>
-        </div>
-
-        <footer>前端示例：不要在生产环境中将密钥放在前端。推荐使用服务器中转存储密钥。</footer>
-      </div>
-    </div>
-
-    <script>
-      // 屏幕切换
-      function showScreen(id){ document.querySelectorAll('#home-screen,#chat-screen,#settings-screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-      document.getElementById('btnHome').addEventListener('click',()=>showScreen('home-screen'));
-      document.getElementById('btnChat').addEventListener('click',()=>showScreen('chat-screen'));
-      document.getElementById('btnSettings').addEventListener('click',()=>showScreen('settings-screen'));
-      document.querySelectorAll('[data-app="wechat"]').forEach(el=>el.addEventListener('click',()=>showScreen('chat-screen')));
-      document.querySelectorAll('[data-app="settings"]').forEach(el=>el.addEventListener('click',()=>showScreen('settings-screen')));
-
-      // 设置保存/加载（使用 hanbao-settings）
-      function loadSettings(){ const s = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); document.getElementById('proxyUrl').value = s.proxyUrl||''; document.getElementById('apiKey').value = s.apiKey||''; document.getElementById('model').value = s.model||''; }
-      function saveSettings(){ const s = { proxyUrl: document.getElementById('proxyUrl').value.trim(), apiKey: document.getElementById('apiKey').value.trim(), model: document.getElementById('model').value.trim() }; localStorage.setItem('hanbao-settings', JSON.stringify(s)); const status=document.getElementById('apiStatus'); status.textContent='设置已保存'; setTimeout(()=>status.textContent='',2200); }
-      document.getElementById('saveApiBtn').addEventListener('click',saveSettings); loadSettings();
-
-      // 聊天
-      const messagesEl = document.getElementById('messages');
-      const inputBox = document.getElementById('inputBox');
-      const sendBtn = document.getElementById('sendBtn');
-
-      function appendMessage(text, who='you'){ const row=document.createElement('div'); row.className='msg-row '+(who==='me'?'me':'you'); const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'you'); b.innerText=text; row.appendChild(b); messagesEl.appendChild(row); messagesEl.scrollTop = messagesEl.scrollHeight; }
-
-      sendBtn.addEventListener('click', handleSend);
-      inputBox.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); handleSend(); } });
-
-      async function handleSend(){ const text = inputBox.value.trim(); if(!text) return; appendMessage(text,'me'); inputBox.value=''; appendMessage('正在生成回复...','you'); try{ const reply = await callConfiguredAPI(text); const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage(reply,'you'); }catch(err){ console.error(err); const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage('请求失败：'+(err.message||err),'you'); } }
-
-      async function callConfiguredAPI(userMessage){ const cfg = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); if(cfg.proxyUrl){ const url = cfg.proxyUrl.replace(/\/$/,'') + '/v1/chat'; const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({model: cfg.model||'gpt-4o', message: userMessage})}); if(!res.ok) throw new Error('代理返回 '+res.status); const d = await res.json(); return d.reply || d.message || d.result || JSON.stringify(d); } if(cfg.apiKey){ try{ const res = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},body: JSON.stringify({model: cfg.model||'gpt-4o', messages:[{role:'user', content:userMessage}]})}); const j = await res.json(); return j.choices?.[0]?.message?.content || JSON.stringify(j); }catch(e){ throw e; } } return new Promise(r=>setTimeout(()=>r('本地模拟回复：'+userMessage.split('').reverse().join('')),700)); }
-
-      document.getElementById('testApiBtn').addEventListener('click', async ()=>{ const s = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); const status=document.getElementById('apiStatus'); status.textContent='正在测试...'; try{ if(s.proxyUrl){ const url = s.proxyUrl.replace(/\/$/,'') + '/v1/ping'; const r = await fetch(url); if(!r.ok) throw new Error('代理返回 '+r.status); status.textContent='代理可达'; }else{ status.textContent='请填写中转站地址以测试'; } }catch(e){ status.textContent='测试失败: '+(e.message||e); } setTimeout(()=>status.textContent='',3000); });
-    </script>
-  </body>
-</html>
-
-                  // 设置保存/加载（使用 hanbao-settings）
-                  function loadSettings(){ const s = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); document.getElementById('proxyUrl').value = s.proxyUrl||''; document.getElementById('apiKey').value = s.apiKey||''; document.getElementById('model').value = s.model||''; }
-                  function saveSettings(){ const s = { proxyUrl: document.getElementById('proxyUrl').value.trim(), apiKey: document.getElementById('apiKey').value.trim(), model: document.getElementById('model').value.trim() }; localStorage.setItem('hanbao-settings', JSON.stringify(s)); const status=document.getElementById('apiStatus'); status.textContent='设置已保存'; setTimeout(()=>status.textContent='',2200); }
-                  document.getElementById('saveApiBtn').addEventListener('click',saveSettings); loadSettings();
-
-                  // 聊天
-                  const messagesEl = document.getElementById('messages');
-                  const inputBox = document.getElementById('inputBox');
-                  const sendBtn = document.getElementById('sendBtn');
-
-                  function appendMessage(text, who='you'){ const row=document.createElement('div'); row.className='msg-row '+(who==='me'?'me':'you'); const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'you'); b.innerText=text; row.appendChild(b); messagesEl.appendChild(row); messagesEl.scrollTop = messagesEl.scrollHeight; }
-
-                  sendBtn.addEventListener('click', handleSend);
-                  inputBox.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); handleSend(); } });
-
-                  async function handleSend(){ const text = inputBox.value.trim(); if(!text) return; appendMessage(text,'me'); inputBox.value=''; appendMessage('正在生成回复...','you'); try{ const reply = await callConfiguredAPI(text); // remove placeholder
-                    const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage(reply,'you'); }catch(err){ console.error(err); const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage('请求失败：'+(err.message||err),'you'); } }
-
-                  async function callConfiguredAPI(userMessage){ const cfg = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); if(cfg.proxyUrl){ const url = cfg.proxyUrl.replace(/\/$/,'') + '/v1/chat'; const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({model: cfg.model||'gpt-4o', message: userMessage})}); if(!res.ok) throw new Error('代理返回 '+res.status); const d = await res.json(); return d.reply || d.message || d.result || JSON.stringify(d); } // openai direct (only test)
-                    if(cfg.apiKey){ try{ const res = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},body: JSON.stringify({model: cfg.model||'gpt-4o', messages:[{role:'user', content:userMessage}]})}); const j = await res.json(); return j.choices?.[0]?.message?.content || JSON.stringify(j); }catch(e){ throw e; } }
-                  // fallback local simulated reply
-                  return new Promise(r=>setTimeout(()=>r('本地模拟回复：'+userMessage.split('').reverse().join('')),700)); }
-
-                  document.getElementById('testApiBtn').addEventListener('click', async ()=>{ const s = JSON.parse(localStorage.getItem('hanbao-settings')||'{}'); const status=document.getElementById('apiStatus'); status.textContent='正在测试...'; try{ if(s.proxyUrl){ const url = s.proxyUrl.replace(/\/$/,'') + '/v1/ping'; const r = await fetch(url); if(!r.ok) throw new Error('代理返回 '+r.status); status.textContent='代理可达'; }else{ status.textContent='请填写中转站地址以测试'; } }catch(e){ status.textContent='测试失败: '+(e.message||e); } setTimeout(()=>status.textContent='',3000); });
-                </script>
-              </body>
-            </html>
-                  </div>
-                  <div id="apiStatus" style="margin-top:8px;color:#9fb6d6"></div>
+            <div class="app-grid">
+              <div class="app-icon" data-app="wechat">
+                <div class="icon-bg">
+                  <img src="https://i.postimg.cc/9Q2g1Y2H/wechat.png" alt="微信" style="width: 100%" />
                 </div>
+                <div>微信</div>
+              </div>
+              <div class="app-icon" data-app="notes">
+                <div class="icon-bg">📷</div>
+                <div>相册</div>
+              </div>
+              <div class="app-icon" data-app="settings">
+                <div class="icon-bg">⚙️</div>
+                <div>设置</div>
               </div>
             </div>
+            <div class="note">
+              项目仓库：<a
+                href="https://github.com/baobaoyu999727272-eng/baobaoyu-xiaoshouji"
+                target="_blank"
+                rel="noreferrer"
+                >baobaoyu-xiaoshouji</a
+              >
+            </div>
           </div>
-          <footer>已做好前端：可填写中转站地址以连接 Gemini/OpenAI 兼容中转站。</footer>
 
-          <script>
-            // 屏幕切换
-            function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-            document.getElementById('wechat-app').addEventListener('click', ()=> showScreen('chat-list-screen'));
-            document.getElementById('settings-app').addEventListener('click', ()=> showScreen('api-settings-screen'));
-            document.querySelector('[data-chat="ai-chat"]').addEventListener('click', ()=> showScreen('chat-interface-screen'));
+          <div id="chat-screen" class="screen">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0">
+              <strong>AI 聊天</strong>
+            </div>
+            <div id="messages" class="messages">
+              <div class="msg-row you"><div class="bubble you">你好，我是 AI 助手。</div></div>
+            </div>
+            <div class="input-row">
+              <input id="inputBox" type="text" placeholder="输入消息..." aria-label="消息输入" />
+              <button id="sendBtn" class="form-button">发送</button>
+            </div>
+          </div>
 
-            // 设置保存/加载
-            const saveApiBtn = document.getElementById('saveApiBtn');
-            const testApiBtn = document.getElementById('testApiBtn');
-            const apiStatus = document.getElementById('apiStatus');
-            function loadSettings(){ const s = JSON.parse(localStorage.getItem('ep_settings')||'{}'); document.getElementById('apiType').value = s.apiType||'proxy'; document.getElementById('proxyUrl').value = s.proxyUrl||''; document.getElementById('apiKey').value = s.apiKey||''; document.getElementById('model').value = s.model||''; }
-            function saveSettings(){ const s = { apiType:document.getElementById('apiType').value, proxyUrl:document.getElementById('proxyUrl').value.trim(), apiKey:document.getElementById('apiKey').value.trim(), model:document.getElementById('model').value.trim() }; localStorage.setItem('ep_settings', JSON.stringify(s)); apiStatus.textContent='设置已保存'; setTimeout(()=>apiStatus.textContent='',2200); }
-            saveApiBtn.addEventListener('click', saveSettings); loadSettings();
+          <div id="settings-screen" class="settings">
+            <div style="font-weight: 600; margin-bottom: 8px">API 设置</div>
+            <div class="form-group">
+              <label>中转站地址</label>
+              <input id="proxyUrl" placeholder="https://your-proxy.example.com" />
+            </div>
+            <div class="form-group">
+              <label>API Key（仅测试）</label>
+              <input id="apiKey" placeholder="sk-... 或 Gemini token" />
+            </div>
+            <div class="form-group">
+              <label>模型</label>
+              <input id="model" placeholder="gpt-4o 或 text-bison" />
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button id="saveApiBtn" class="form-button">保存</button>
+              <button id="testApiBtn" class="form-button" style="background: #06b6d4">测试</button>
+            </div>
+            <div id="apiStatus" class="note" style="padding-top: 6px"></div>
+          </div>
 
-            // 聊天核心元素（仅此处声明）
-            const messagesEl = document.getElementById('messages');
-            const inputBox = document.getElementById('inputBox');
-            const sendBtn = document.getElementById('sendBtn');
+          <footer>前端示例：不要在生产环境中将密钥放在前端。推荐使用服务器中转存储密钥。</footer>
+        </div>
+      </div>
 
-            function appendMessage(text, who='you'){ const row=document.createElement('div'); row.className='msg-row '+(who==='me'?'me':'you'); const b=document.createElement('div'); b.className='bubble '+(who==='me'?'me':'you'); b.innerText=text; row.appendChild(b); messagesEl.appendChild(row); messagesEl.scrollTop = messagesEl.scrollHeight; }
+      <script>
+        // 屏幕切换
+        function showScreen(id) {
+          document
+            .querySelectorAll('#home-screen,#chat-screen,#settings-screen')
+            .forEach(s => s.classList.remove('active'));
+          document.getElementById(id).classList.add('active');
+        }
+        document.getElementById('btnHome').addEventListener('click', () => showScreen('home-screen'));
+        document.getElementById('btnChat').addEventListener('click', () => showScreen('chat-screen'));
+        document.getElementById('btnSettings').addEventListener('click', () => showScreen('settings-screen'));
+        document
+          .querySelectorAll('[data-app="wechat"]')
+          .forEach(el => el.addEventListener('click', () => showScreen('chat-screen')));
+        document
+          .querySelectorAll('[data-app="settings"]')
+          .forEach(el => el.addEventListener('click', () => showScreen('settings-screen')));
 
-            sendBtn.addEventListener('click', async ()=>{ const text=inputBox.value.trim(); if(!text) return; appendMessage(text,'me'); inputBox.value=''; appendMessage('正在生成回复...','you'); try{ const reply = await callConfiguredAPI(text); const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage(reply,'you'); }catch(e){ console.error(e); const last = messagesEl.querySelectorAll('.msg-row.you'); if(last.length) last[last.length-1].remove(); appendMessage('请求失败：'+(e.message||e),'you'); } });
+        // 设置保存/加载（使用 hanbao-settings）
+        function loadSettings() {
+          const s = JSON.parse(localStorage.getItem('hanbao-settings') || '{}');
+          document.getElementById('proxyUrl').value = s.proxyUrl || '';
+          document.getElementById('apiKey').value = s.apiKey || '';
+          document.getElementById('model').value = s.model || '';
+        }
+        function saveSettings() {
+          const s = {
+            proxyUrl: document.getElementById('proxyUrl').value.trim(),
+            apiKey: document.getElementById('apiKey').value.trim(),
+            model: document.getElementById('model').value.trim(),
+          };
+          localStorage.setItem('hanbao-settings', JSON.stringify(s));
+          const status = document.getElementById('apiStatus');
+          status.textContent = '设置已保存';
+          setTimeout(() => (status.textContent = ''), 2200);
+        }
+        document.getElementById('saveApiBtn').addEventListener('click', saveSettings);
+        loadSettings();
 
-            async function callConfiguredAPI(userMessage){ const cfg = JSON.parse(localStorage.getItem('ep_settings')||'{}'); if(cfg.apiType==='proxy' && cfg.proxyUrl){ const url = cfg.proxyUrl.replace(/\/$/,'') + '/v1/chat'; const res = await fetch(url,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ model: cfg.model||'gpt-4o', message: userMessage }) }); if(!res.ok) throw new Error('代理返回 '+res.status); const data = await res.json(); return data.reply || data.message || data.result || JSON.stringify(data); } if(cfg.apiType==='openai' && cfg.apiKey){ const res = await fetch('https://api.openai.com/v1/chat/completions',{ method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey }, body: JSON.stringify({ model: cfg.model||'gpt-4o', messages:[{role:'user', content:userMessage}] }) }); const d=await res.json(); return d.choices?.[0]?.message?.content || JSON.stringify(d); } if(cfg.apiType==='gemini' && cfg.apiKey){ throw new Error('Gemini 官方直连需服务器端授权，请使用中转代理'); } return new Promise(r=>setTimeout(()=>r('本地模拟回复：'+userMessage.split('').reverse().join('')),700)); }
+        // 聊天
+        const messagesEl = document.getElementById('messages');
+        const inputBox = document.getElementById('inputBox');
+        const sendBtn = document.getElementById('sendBtn');
 
-            testApiBtn.addEventListener('click', async ()=>{ const s = JSON.parse(localStorage.getItem('ep_settings')||'{}'); apiStatus.textContent='正在测试...'; try{ if(s.apiType==='proxy' && s.proxyUrl){ const url = s.proxyUrl.replace(/\/$/,'') + '/v1/ping'; const r = await fetch(url); if(!r.ok) throw new Error('代理返回 '+r.status); apiStatus.textContent='代理可达'; }else{ apiStatus.textContent='请选择或配置中转代理以测试'; } }catch(e){ apiStatus.textContent='测试失败: '+(e.message||e); } setTimeout(()=>apiStatus.textContent='',3000); });
+        function appendMessage(text, who = 'you') {
+          const row = document.createElement('div');
+          row.className = 'msg-row ' + (who === 'me' ? 'me' : 'you');
+          const b = document.createElement('div');
+          b.className = 'bubble ' + (who === 'me' ? 'me' : 'you');
+          b.innerText = text;
+          row.appendChild(b);
+          messagesEl.appendChild(row);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
 
-            // 小提示：自动聚焦输入
-            inputBox.addEventListener('focus', ()=>{});
-          </script>
-        </body>
-      </html>
+        sendBtn.addEventListener('click', handleSend);
+        inputBox.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSend();
+          }
+        });
+
+        async function handleSend() {
+          const text = inputBox.value.trim();
+          if (!text) return;
+          appendMessage(text, 'me');
+          inputBox.value = '';
+          appendMessage('正在生成回复...', 'you');
+          try {
+            const reply = await callConfiguredAPI(text);
+            const last = messagesEl.querySelectorAll('.msg-row.you');
+            if (last.length) last[last.length - 1].remove();
+            appendMessage(reply, 'you');
+          } catch (err) {
+            console.error(err);
+            const last = messagesEl.querySelectorAll('.msg-row.you');
+            if (last.length) last[last.length - 1].remove();
+            appendMessage('请求失败：' + (err.message || err), 'you');
+          }
+        }
+
+        async function callConfiguredAPI(userMessage) {
+          const cfg = JSON.parse(localStorage.getItem('hanbao-settings') || '{}');
+          if (cfg.proxyUrl) {
+            const url = cfg.proxyUrl.replace(/\/$/, '') + '/v1/chat';
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ model: cfg.model || 'gpt-4o', message: userMessage }),
+            });
+            if (!res.ok) throw new Error('代理返回 ' + res.status);
+            const d = await res.json();
+            return d.reply || d.message || d.result || JSON.stringify(d);
+          }
+          if (cfg.apiKey) {
+            try {
+              const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cfg.apiKey },
+                body: JSON.stringify({
+                  model: cfg.model || 'gpt-4o',
+                  messages: [{ role: 'user', content: userMessage }],
+                }),
+              });
+              const j = await res.json();
+              return j.choices?.[0]?.message?.content || JSON.stringify(j);
+            } catch (e) {
+              throw e;
+            }
+          }
+          return new Promise(r =>
+            setTimeout(() => r('本地模拟回复：' + userMessage.split('').reverse().join('')), 700),
+          );
+        }
+
+        document.getElementById('testApiBtn').addEventListener('click', async () => {
+          const s = JSON.parse(localStorage.getItem('hanbao-settings') || '{}');
+          const status = document.getElementById('apiStatus');
+          status.textContent = '正在测试...';
+          try {
+            if (s.proxyUrl) {
+              const url = s.proxyUrl.replace(/\/$/, '') + '/v1/ping';
+              const r = await fetch(url);
+              if (!r.ok) throw new Error('代理返回 ' + r.status);
+              status.textContent = '代理可达';
+            } else {
+              status.textContent = '请填写中转站地址以测试';
+            }
+          } catch (e) {
+            status.textContent = '测试失败: ' + (e.message || e);
+          }
+          setTimeout(() => (status.textContent = ''), 3000);
+        });
+      </script>
+    </body>
+  </html>
+  <body></body>
+</html>
