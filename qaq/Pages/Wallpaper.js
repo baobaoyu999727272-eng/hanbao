@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import PhoneFrame from '../components/phone/PhoneFrame';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
+import { createPageUrl } from '@/utils';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import PhoneFrame from '../components/phone/PhoneFrame';
 
 const presetWallpapers = [
   'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=800&fit=crop',
@@ -37,7 +37,7 @@ export default function Wallpaper() {
   const handleApplyWallpaper = () => {
     if (selectedWallpaper) {
       // 这里可以保存壁纸设置
-      localStorage.setItem('ephone-wallpaper', selectedWallpaper);
+      localStorage.setItem('hanbao-wallpaper', selectedWallpaper);
       alert('壁纸已应用！');
     } else {
       alert('请先选择一个壁纸');

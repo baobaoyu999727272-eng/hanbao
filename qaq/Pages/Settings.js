@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import PhoneFrame from '../components/phone/PhoneFrame';
-import { ArrowLeft, Download, Upload, Palette } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { createPageUrl } from '@/utils';
+import { ArrowLeft, Download, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import PhoneFrame from '../components/phone/PhoneFrame';
 
 export default function Settings() {
   const [apiKey, setApiKey] = useState('');
@@ -18,7 +18,7 @@ export default function Settings() {
   const handleSaveSettings = () => {
     // 保存设置到本地存储
     localStorage.setItem(
-      'ephone-settings',
+      'hanbao-settings',
       JSON.stringify({
         apiKey,
         modelName,
