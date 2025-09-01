@@ -572,18 +572,18 @@
           height: 780px;
         }
       }
-      
+
       /* 改进的响应式和UI样式 */
       .phone {
         transition: all 0.3s ease;
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
       }
-      
+
       .modal {
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         animation: modalSlideIn 0.3s ease-out;
       }
-      
+
       @keyframes modalSlideIn {
         from {
           opacity: 0;
@@ -594,47 +594,51 @@
           transform: translateY(0) scale(1);
         }
       }
-      
+
       .btn {
         transition: all 0.2s ease;
         user-select: none;
       }
-      
+
       .btn:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
-      
+
       .btn:active {
         transform: translateY(0);
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       }
-      
+
       /* 优化输入框样式 */
-      input, textarea, select {
+      input,
+      textarea,
+      select {
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
-      
-      input:focus, textarea:focus, select:focus {
+
+      input:focus,
+      textarea:focus,
+      select:focus {
         outline: none;
         border-color: #1a8aff;
         box-shadow: 0 0 0 3px rgba(26, 138, 255, 0.1);
       }
-      
+
       /* QQ界面优化 */
       .qq-session {
         transition: background-color 0.2s ease;
       }
-      
+
       .qq-session:hover {
         background-color: rgba(0, 0, 0, 0.05);
       }
-      
+
       /* 消息气泡动画 */
       .bubble {
         animation: bubbleSlideIn 0.3s ease-out;
       }
-      
+
       @keyframes bubbleSlideIn {
         from {
           opacity: 0;
@@ -645,41 +649,43 @@
           transform: translateY(0);
         }
       }
-      
+
       /* 世界书条目样式优化 */
       #worldBookList {
         scrollbar-width: thin;
         scrollbar-color: #ddd transparent;
       }
-      
+
       #worldBookList::-webkit-scrollbar {
         width: 6px;
       }
-      
+
       #worldBookList::-webkit-scrollbar-track {
         background: transparent;
       }
-      
+
       #worldBookList::-webkit-scrollbar-thumb {
         background: #ddd;
         border-radius: 3px;
       }
-      
+
       /* 改进loading动画 */
       .typing-dots span {
         animation: typing 1.4s infinite;
       }
-      
+
       .typing-dots span:nth-child(2) {
         animation-delay: 0.2s;
       }
-      
+
       .typing-dots span:nth-child(3) {
         animation-delay: 0.4s;
       }
-      
+
       @keyframes typing {
-        0%, 60%, 100% {
+        0%,
+        60%,
+        100% {
           transform: translateY(0);
           opacity: 0.4;
         }
@@ -698,7 +704,7 @@
         <div class="watermark">HANBAO</div>
         <div class="home-panel">
           <div class="app-row" id="app-row">
-            <a class="app" href="#" data-screen="chat-screen"
+            <a class="app" href="#" onclick="showWorldBookModal(); return false;"
               ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d6a78c089_1756681895.webp" alt="世界书" /></div>
               <div class="label">世界书</div></a
             >
@@ -711,7 +717,7 @@
               <div class="label">API</div></a
             >
             <a class="app" href="#" data-screen="settings-screen"
-              ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d6a7999b5_1756681895.webp" alt="设置" /></div>
+              ><div class="icon"><img src="https://i.111666.best/image/KrGLd0mjGkHswb9ieAE9CG.png" alt="设置" /></div>
               <div class="label">设置</div></a
             >
           </div>
@@ -738,20 +744,56 @@
           </div>
           <div class="chat-footer">
             <div class="attachment-icons">
-              <button class="btn ghost" onclick="showGroupChatModal()" title="创建群聊">👥</button>
-              <button class="btn ghost" title="拍照">📷</button>
-              <button class="btn ghost" title="相册">🖼️</button>
-              <button class="btn ghost" onclick="showTransferModal()" title="转账">💰</button>
-              <button class="btn ghost" onclick="showRedPacketModal()" title="红包">🧧</button>
-              <button class="btn ghost" title="语音">🎙️</button>
+              <button class="btn ghost" onclick="showGroupChatModal()" title="创建群聊">
+                <img
+                  src="https://i.111666.best/image/9kHFDz5Nadhj7g2vwOyk9G.png"
+                  alt="群聊"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
+              <button class="btn ghost" onclick="showCameraModal()" title="拍照">
+                <img
+                  src="https://i.111666.best/image/3QPuXFeAydF7NrY5IDMxYu.png"
+                  alt="拍照"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
+              <button class="btn ghost" onclick="showAlbumModal()" title="相册">
+                <img
+                  src="https://i.111666.best/image/GF2ZspS1bnNGxsoto5GhIc.png"
+                  alt="相册"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
+              <button class="btn ghost" onclick="showTransferModal()" title="转账">
+                <img
+                  src="https://i.111666.best/image/gb4daNz41OHTOBfoHnvBqv.png"
+                  alt="转账"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
+              <button class="btn ghost" onclick="showRedPacketModal()" title="红包">
+                <img
+                  src="https://i.111666.best/image/K2nroRSSGapSjiL7yU70qc.png"
+                  alt="红包"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
+              <button class="btn ghost" title="表情包">
+                <img
+                  src="https://i.111666.best/image/CNvFPp13Aiqt9ILZznqqha.png"
+                  alt="表情包"
+                  style="width: 20px; height: 20px"
+                />
+              </button>
             </div>
             <div class="chat-input-row">
               <input id="inputBox" placeholder="输入消息..." class="chat-input" />
-              <button id="sendBtn" class="btn primary send-btn">发送</button>
               <button
                 id="rollFooterBtn"
                 class="btn ghost"
                 style="margin-left: 8px; padding: 6px 8px; border-radius: 14px"
+                onclick="showRollOptions()"
               >
                 <img
                   src="https://img.cdn1.vip/i/68b52535066a9_1756702005.webp"
@@ -759,6 +801,7 @@
                   style="width: 20px; height: 20px; display: block"
                 />
               </button>
+              <button id="sendBtn" class="btn primary send-btn">发送</button>
             </div>
           </div>
         </div>
@@ -830,61 +873,87 @@
           <div class="nav"><button class="back-btn">返回</button><strong>设置</strong></div>
           <div class="page-content">
             <label><input id="enableNotchPreview" type="checkbox" /> 启用灵动岛预览</label>
-            
+
             <!-- 壁纸设置 -->
-            <div style="margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 12px;">
+            <div style="margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 12px">
               <h4 style="margin: 0 0 12px 0; color: #333">🎨 壁纸设置</h4>
               <div style="margin-bottom: 12px">
                 <label style="font-size: 13px; display: block; margin-bottom: 4px">壁纸类型</label>
-                <select id="wallpaperType" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ddd">
+                <select
+                  id="wallpaperType"
+                  style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ddd"
+                >
                   <option value="color">纯色背景</option>
                   <option value="gradient">渐变背景</option>
                   <option value="image">图片背景</option>
                 </select>
               </div>
-              
+
               <div id="colorWallpaper" style="margin-bottom: 12px">
                 <label style="font-size: 13px; display: block; margin-bottom: 4px">背景颜色</label>
-                <input type="color" id="wallpaperColor" value="#f0f2f5" 
-                       style="width: 60px; height: 40px; border: none; border-radius: 8px; cursor: pointer" />
+                <input
+                  type="color"
+                  id="wallpaperColor"
+                  value="#f0f2f5"
+                  style="width: 60px; height: 40px; border: none; border-radius: 8px; cursor: pointer"
+                />
               </div>
-              
+
               <div id="gradientWallpaper" style="margin-bottom: 12px; display: none">
                 <label style="font-size: 13px; display: block; margin-bottom: 4px">渐变色彩</label>
                 <div style="display: flex; gap: 8px; align-items: center">
-                  <input type="color" id="gradientColor1" value="#667eea" 
-                         style="width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer" />
+                  <input
+                    type="color"
+                    id="gradientColor1"
+                    value="#667eea"
+                    style="width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer"
+                  />
                   <span>→</span>
-                  <input type="color" id="gradientColor2" value="#764ba2" 
-                         style="width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer" />
+                  <input
+                    type="color"
+                    id="gradientColor2"
+                    value="#764ba2"
+                    style="width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer"
+                  />
                 </div>
               </div>
-              
+
               <div id="imageWallpaper" style="margin-bottom: 12px; display: none">
                 <label style="font-size: 13px; display: block; margin-bottom: 4px">背景图片</label>
                 <div style="display: flex; gap: 8px; align-items: center">
-                  <input id="wallpaperImageUrl" placeholder="图片URL或点击上传" 
-                         style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ddd" />
+                  <input
+                    id="wallpaperImageUrl"
+                    placeholder="图片URL或点击上传"
+                    style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ddd"
+                  />
                   <button id="wallpaperUploadBtn" class="btn ghost" style="padding: 6px 8px">上传</button>
                 </div>
                 <input id="wallpaperImageFile" type="file" accept="image/*" style="display: none" />
               </div>
-              
+
               <button id="applyWallpaper" class="btn primary" style="width: 100%; margin-top: 8px">应用壁纸</button>
             </div>
-            
+
             <!-- 世界书设置 -->
-            <div style="margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 12px;">
+            <div style="margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 12px">
               <h4 style="margin: 0 0 12px 0; color: #333">📖 世界书</h4>
               <p style="margin: 0 0 12px 0; font-size: 12px; color: #666">
                 添加世界观设定、角色背景等额外信息，帮助AI更好地理解对话场景
               </p>
               <button id="openWorldBook" class="btn primary" style="width: 100%">管理世界书</button>
             </div>
-            
+
             <!-- 作者信息 -->
-            <div style="margin: 20px 0; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                        border-radius: 12px; color: white; text-align: center">
+            <div
+              style="
+                margin: 20px 0;
+                padding: 16px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 12px;
+                color: white;
+                text-align: center;
+              "
+            >
               <h4 style="margin: 0 0 8px 0">👨‍💻 作者信息</h4>
               <p style="margin: 0; font-size: 14px; opacity: 0.9">作者：baobaoyu</p>
               <div style="margin: 12px 0; font-size: 12px; opacity: 0.8; line-height: 1.4">
@@ -1149,7 +1218,7 @@
             添加关键词和对应描述，当对话中出现关键词时自动注入相关信息
           </p>
         </div>
-        
+
         <div style="margin-bottom: 16px">
           <div style="display: flex; gap: 8px; margin-bottom: 12px">
             <input
@@ -1162,20 +1231,150 @@
           <textarea
             id="worldBookContent"
             placeholder="描述内容（当出现关键词时，此内容会自动添加到对话上下文中）"
-            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb; min-height: 80px; resize: vertical"
+            style="
+              width: 100%;
+              padding: 8px;
+              border-radius: 8px;
+              border: 1px solid #eef3fb;
+              min-height: 80px;
+              resize: vertical;
+            "
           ></textarea>
         </div>
-        
+
         <div style="margin-bottom: 16px">
           <h4 style="margin: 0 0 8px 0; color: #333">已添加条目</h4>
-          <div id="worldBookList" style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 8px">
+          <div
+            id="worldBookList"
+            style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 8px"
+          >
             <!-- 世界书条目将在这里显示 -->
           </div>
         </div>
-        
+
         <div style="display: flex; gap: 8px">
           <button id="worldBookCancel" class="btn ghost" style="flex: 1">关闭</button>
           <button id="clearWorldBook" class="btn" style="flex: 1; background: #ff4757; color: white">清空全部</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 拍照模态框 -->
+    <div id="cameraModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 350px">
+        <div style="text-align: center; padding-bottom: 16px">
+          <h3 style="margin: 0; color: #1a8aff">📷 拍照描述</h3>
+        </div>
+        <div style="margin-bottom: 16px">
+          <label style="font-size: 13px; color: #666">用文字描述你想要的图片内容</label>
+          <textarea
+            id="cameraDescription"
+            placeholder="例如：一只可爱的小猫坐在阳光下..."
+            style="
+              width: 100%;
+              padding: 10px;
+              border-radius: 8px;
+              border: 1px solid #eef3fb;
+              margin-top: 4px;
+              min-height: 80px;
+              resize: vertical;
+            "
+          ></textarea>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button id="cameraCancel" class="btn ghost" style="flex: 1">取消</button>
+          <button id="cameraConfirm" class="btn primary" style="flex: 1">发送描述</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 相册模态框 -->
+    <div id="albumModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 350px">
+        <div style="text-align: center; padding-bottom: 16px">
+          <h3 style="margin: 0; color: #1a8aff">🖼️ 选择图片</h3>
+        </div>
+        <div style="margin-bottom: 16px">
+          <input type="file" id="albumFileInput" accept="image/*" style="display: none" />
+          <button
+            id="selectImageBtn"
+            class="btn"
+            style="width: 100%; padding: 20px; border: 2px dashed #ddd; background: #f9f9f9"
+          >
+            点击选择图片
+          </button>
+          <div id="imagePreview" style="margin-top: 12px; text-align: center"></div>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button id="albumCancel" class="btn ghost" style="flex: 1">取消</button>
+          <button id="albumConfirm" class="btn primary" style="flex: 1; display: none">发送图片</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roll选项模态框 -->
+    <div id="rollOptionsModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 250px">
+        <div style="text-align: center; padding-bottom: 16px">
+          <h3 style="margin: 0; color: #1a8aff">🎲 选择操作</h3>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <button id="waitReplyBtn" class="btn primary" style="width: 100%">等待回复</button>
+          <button id="rollBtn" class="btn" style="width: 100%; background: #f39c12; color: white">重新生成</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 聊天设置模态框 -->
+    <div id="chatSettingsModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 400px">
+        <div style="text-align: center; padding-bottom: 16px">
+          <h3 style="margin: 0; color: #1a8aff">⚙️ 聊天设置</h3>
+        </div>
+        <div style="margin-bottom: 12px">
+          <label style="font-size: 13px; display: block; margin-bottom: 4px">AI 昵称</label>
+          <input
+            id="chatCharName"
+            placeholder="AI的名字"
+            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb"
+          />
+        </div>
+        <div style="margin-bottom: 12px">
+          <label style="font-size: 13px; display: block; margin-bottom: 4px">AI 头像URL</label>
+          <input
+            id="chatCharAvatar"
+            placeholder="头像链接"
+            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb"
+          />
+        </div>
+        <div style="margin-bottom: 12px">
+          <label style="font-size: 13px; display: block; margin-bottom: 4px">AI 人设</label>
+          <textarea
+            id="chatCharPrompt"
+            placeholder="AI的性格和行为设定..."
+            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb; min-height: 60px"
+          ></textarea>
+        </div>
+        <hr style="margin: 16px 0; border: none; border-top: 1px solid #eee" />
+        <div style="margin-bottom: 12px">
+          <label style="font-size: 13px; display: block; margin-bottom: 4px">你的昵称</label>
+          <input
+            id="chatUserName"
+            placeholder="你的名字"
+            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb"
+          />
+        </div>
+        <div style="margin-bottom: 16px">
+          <label style="font-size: 13px; display: block; margin-bottom: 4px">你的头像URL</label>
+          <input
+            id="chatUserAvatar"
+            placeholder="头像链接"
+            style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb"
+          />
+        </div>
+        <div style="display: flex; gap: 8px">
+          <button id="chatSettingsCancel" class="btn ghost" style="flex: 1">取消</button>
+          <button id="chatSettingsSave" class="btn primary" style="flex: 1">保存</button>
         </div>
       </div>
     </div>
@@ -1239,6 +1438,165 @@
       function closeWorldBookModal() {
         const modal = document.getElementById('worldBookModal');
         if (modal) modal.classList.remove('active');
+      }
+
+      // 拍照模态框
+      function showCameraModal() {
+        const modal = document.getElementById('cameraModal');
+        if (modal) {
+          modal.classList.add('active');
+          document.getElementById('cameraDescription').value = '';
+        }
+      }
+
+      function closeCameraModal() {
+        const modal = document.getElementById('cameraModal');
+        if (modal) modal.classList.remove('active');
+      }
+
+      // 相册模态框
+      function showAlbumModal() {
+        const modal = document.getElementById('albumModal');
+        if (modal) {
+          modal.classList.add('active');
+          document.getElementById('imagePreview').innerHTML = '';
+          document.getElementById('albumConfirm').style.display = 'none';
+        }
+      }
+
+      function closeAlbumModal() {
+        const modal = document.getElementById('albumModal');
+        if (modal) modal.classList.remove('active');
+      }
+
+      // Roll选项模态框
+      function showRollOptions() {
+        const modal = document.getElementById('rollOptionsModal');
+        if (modal) modal.classList.add('active');
+      }
+
+      function closeRollOptions() {
+        const modal = document.getElementById('rollOptionsModal');
+        if (modal) modal.classList.remove('active');
+      }
+
+      // 聊天设置
+      function openChatSettings() {
+        const modal = document.getElementById('chatSettingsModal');
+        if (modal) {
+          modal.classList.add('active');
+          loadChatSettings();
+        }
+      }
+
+      function closeChatSettings() {
+        const modal = document.getElementById('chatSettingsModal');
+        if (modal) modal.classList.remove('active');
+      }
+
+      // 删除模式
+      let deleteMode = false;
+      function toggleDeleteMode() {
+        deleteMode = !deleteMode;
+        const deleteBtn = document.getElementById('deleteBtn');
+        const messages = document.querySelectorAll('#messages .bubble');
+
+        if (deleteMode) {
+          deleteBtn.style.background = '#ff4757';
+          deleteBtn.style.color = 'white';
+          // 为每个消息添加删除按钮
+          messages.forEach((msg, index) => {
+            if (!msg.querySelector('.delete-msg-btn')) {
+              const delBtn = document.createElement('button');
+              delBtn.className = 'delete-msg-btn';
+              delBtn.innerHTML = '❌';
+              delBtn.style.cssText =
+                'position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;';
+              delBtn.onclick = () => deleteMessage(index);
+              msg.style.position = 'relative';
+              msg.appendChild(delBtn);
+            }
+          });
+        } else {
+          deleteBtn.style.background = '';
+          deleteBtn.style.color = '';
+          // 移除所有删除按钮
+          document.querySelectorAll('.delete-msg-btn').forEach(btn => btn.remove());
+        }
+      }
+
+      function deleteMessage(index) {
+        if (currentMessages && currentMessages[index]) {
+          currentMessages.splice(index, 1);
+          saveChat(activeChatName);
+          // 重新渲染消息
+          const messagesEl = document.getElementById('messages');
+          messagesEl.innerHTML = '';
+          currentMessages.forEach(m => renderMessage(m.content, m.role === 'user' ? 'me' : 'assistant'));
+          // 重新进入删除模式
+          deleteMode = false;
+          toggleDeleteMode();
+        }
+      }
+
+      function showMoreOptions() {
+        alert('更多功能开发中...');
+      }
+
+      // 转账接收处理
+      function showTransferReceived(receiver, amount, note) {
+        const receivedCard = `
+          <div class="transfer-received" style="
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+            max-width: 250px;
+            color: #2e7d32;
+          ">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span style="color: #4caf50; margin-right: 8px;">✅</span>
+              <span style="font-weight: bold;">转账已接收</span>
+            </div>
+            <div style="font-size: 18px; font-weight: bold; margin: 8px 0; color: #2e7d32;">¥${amount}</div>
+            <div style="font-size: 12px; color: #666;">来自: ${receiver}</div>
+            ${note ? `<div style="font-size: 12px; color: #666; margin-top: 4px;">${note}</div>` : ''}
+            <div style="text-align: center; margin-top: 8px; font-size: 12px; color: #4caf50;">
+              转账已到账
+            </div>
+          </div>
+        `;
+        appendMessage(receivedCard, 'assistant');
+      }
+
+      // 红包接收处理
+      function showRedPacketReceived(type, amount, count, message) {
+        const randomAmount =
+          type === 'lucky'
+            ? (Math.random() * parseFloat(amount)).toFixed(2)
+            : (parseFloat(amount) / parseInt(count)).toFixed(2);
+        const receivedCard = `
+          <div class="redpacket-received" style="
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+            max-width: 250px;
+            text-align: center;
+            color: #e65100;
+          ">
+            <div style="font-size: 24px; margin-bottom: 8px;">🎉</div>
+            <div style="font-weight: bold; margin-bottom: 8px;">恭喜发财!</div>
+            <div style="font-size: 20px; font-weight: bold; color: #ff5722; margin: 8px 0;">¥${randomAmount}</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 4px;">${message}</div>
+            <div style="font-size: 10px; color: #999;">
+              ${type === 'lucky' ? '拼手气红包' : '普通红包'} · 已领取
+            </div>
+          </div>
+        `;
+        appendMessage(receivedCard, 'assistant');
       }
 
       (function () {
@@ -1617,12 +1975,12 @@
               if (uname) messagesPayload.push({ role: 'system', content: `User name: ${uname}` });
             } catch (e) {}
             if (sysPrompt) messagesPayload.push({ role: 'system', content: sysPrompt });
-            
+
             // 添加世界书上下文
             if (worldBookContext) {
               messagesPayload.push({ role: 'system', content: `世界书信息: ${worldBookContext}` });
             }
-            
+
             messagesPayload.push({ role: 'user', content: t });
 
             const body = {
@@ -1675,7 +2033,8 @@
             const t = (inputBox.value || '').trim();
             if (!t) return;
             inputBox.value = '';
-            requestReply(t, { appendUser: true });
+            // 只发送消息，不请求AI回复
+            appendMessage(t, 'me');
           });
 
         // API 响应相关已移除
@@ -2118,9 +2477,32 @@
               return;
             }
 
-            // 发送转账消息
-            const transferMsg = `💰 转账给 ${receiver}\n金额: ¥${amount}\n${note ? '说明: ' + note : ''}`;
-            appendMessage(transferMsg, 'me');
+            // 发送QQ风格的转账卡片
+            const transferCard = `
+              <div class="transfer-card" style="
+                background: linear-gradient(135deg, #ff9a8b 0%, #a8e6cf 100%);
+                border-radius: 12px;
+                padding: 16px;
+                margin: 8px 0;
+                color: white;
+                max-width: 250px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+              ">
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 24px; margin-right: 8px;">💰</span>
+                  <span style="font-weight: bold;">转账给 ${receiver}</span>
+                </div>
+                <div style="font-size: 24px; font-weight: bold; margin: 8px 0;">¥${amount}</div>
+                ${note ? `<div style="font-size: 12px; opacity: 0.9;">${note}</div>` : ''}
+                <div style="text-align: center; margin-top: 12px;">
+                  <button onclick="showTransferReceived('${receiver}', '${amount}', '${note}')" 
+                          style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 6px 16px; border-radius: 20px; cursor: pointer;">
+                    查看转账
+                  </button>
+                </div>
+              </div>
+            `;
+            appendMessage(transferCard, 'me');
             closeTransferModal();
           });
         }
@@ -2149,10 +2531,32 @@
               return;
             }
 
-            // 发送红包消息
+            // 发送QQ风格的红包卡片
             const typeText = type === 'lucky' ? '拼手气红包' : '普通红包';
-            const redPacketMsg = `🧧 ${typeText}\n金额: ¥${amount}\n个数: ${count}个\n祝福: ${message}`;
-            appendMessage(redPacketMsg, 'me');
+            const redPacketCard = `
+              <div class="redpacket-card" style="
+                background: linear-gradient(135deg, #ff4757 0%, #ff6b7a 100%);
+                border-radius: 12px;
+                padding: 16px;
+                margin: 8px 0;
+                color: white;
+                max-width: 250px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                text-align: center;
+              ">
+                <div style="font-size: 32px; margin-bottom: 8px;">🧧</div>
+                <div style="font-weight: bold; margin-bottom: 4px;">${message}</div>
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">${typeText}</div>
+                <div style="font-size: 18px; font-weight: bold;">¥${amount} × ${count}个</div>
+                <div style="margin-top: 12px;">
+                  <button onclick="showRedPacketReceived('${type}', '${amount}', '${count}', '${message}')" 
+                          style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 6px 16px; border-radius: 20px; cursor: pointer;">
+                    开红包
+                  </button>
+                </div>
+              </div>
+            `;
+            appendMessage(redPacketCard, 'me');
             closeRedPacketModal();
           });
         }
@@ -2623,11 +3027,11 @@
 
           // 上传图片
           uploadBtn.addEventListener('click', () => fileInput.click());
-          fileInput.addEventListener('change', (e) => {
+          fileInput.addEventListener('change', e => {
             const file = e.target.files[0];
             if (file) {
               const reader = new FileReader();
-              reader.onload = (e) => {
+              reader.onload = e => {
                 document.getElementById('wallpaperImageUrl').value = e.target.result;
               };
               reader.readAsDataURL(file);
@@ -2683,7 +3087,7 @@
           addBtn.addEventListener('click', () => {
             const keyword = document.getElementById('worldBookKeyword').value.trim();
             const content = document.getElementById('worldBookContent').value.trim();
-            
+
             if (!keyword || !content) {
               alert('请填写关键词和描述内容');
               return;
@@ -2691,13 +3095,13 @@
 
             const worldBook = JSON.parse(localStorage.getItem('world-book') || '[]');
             const existingIndex = worldBook.findIndex(entry => entry.keyword === keyword);
-            
+
             if (existingIndex >= 0) {
               worldBook[existingIndex].content = content;
             } else {
               worldBook.push({ keyword, content, id: Date.now() });
             }
-            
+
             localStorage.setItem('world-book', JSON.stringify(worldBook));
             document.getElementById('worldBookKeyword').value = '';
             document.getElementById('worldBookContent').value = '';
@@ -2715,13 +3119,15 @@
         function loadWorldBookEntries() {
           const listDiv = document.getElementById('worldBookList');
           const worldBook = JSON.parse(localStorage.getItem('world-book') || '[]');
-          
+
           if (worldBook.length === 0) {
             listDiv.innerHTML = '<p style="color: #999; text-align: center; margin: 20px 0">暂无条目</p>';
             return;
           }
 
-          listDiv.innerHTML = worldBook.map(entry => `
+          listDiv.innerHTML = worldBook
+            .map(
+              entry => `
             <div style="border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: flex-start">
               <div style="flex: 1">
                 <strong style="color: #667eea">${entry.keyword}</strong>
@@ -2730,10 +3136,12 @@
               <button onclick="deleteWorldBookEntry(${entry.id})" 
                       style="background: #ff4757; color: white; border: none; border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer">删除</button>
             </div>
-          `).join('');
+          `,
+            )
+            .join('');
         }
 
-        window.deleteWorldBookEntry = function(id) {
+        window.deleteWorldBookEntry = function (id) {
           const worldBook = JSON.parse(localStorage.getItem('world-book') || '[]');
           const filtered = worldBook.filter(entry => entry.id !== id);
           localStorage.setItem('world-book', JSON.stringify(filtered));
@@ -2744,19 +3152,197 @@
         function applyWorldBook(messageContent) {
           const worldBook = JSON.parse(localStorage.getItem('world-book') || '[]');
           let contextAddition = '';
-          
+
           worldBook.forEach(entry => {
             if (messageContent.toLowerCase().includes(entry.keyword.toLowerCase())) {
               contextAddition += `\n[世界书: ${entry.keyword}] ${entry.content}`;
             }
           });
-          
+
           return contextAddition;
+        }
+
+        // 初始化新功能模态框
+        function initNewModals() {
+          // 拍照模态框
+          const cameraCancel = document.getElementById('cameraCancel');
+          const cameraConfirm = document.getElementById('cameraConfirm');
+          cameraCancel.addEventListener('click', closeCameraModal);
+          cameraConfirm.addEventListener('click', () => {
+            const description = document.getElementById('cameraDescription').value.trim();
+            if (description) {
+              appendMessage(`[图片描述] ${description}`, 'me');
+              closeCameraModal();
+            }
+          });
+
+          // 相册模态框
+          const albumCancel = document.getElementById('albumCancel');
+          const albumConfirm = document.getElementById('albumConfirm');
+          const selectImageBtn = document.getElementById('selectImageBtn');
+          const albumFileInput = document.getElementById('albumFileInput');
+
+          albumCancel.addEventListener('click', closeAlbumModal);
+          selectImageBtn.addEventListener('click', () => albumFileInput.click());
+
+          albumFileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = e => {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; max-height: 200px; border-radius: 8px;" />`;
+                document.getElementById('albumConfirm').style.display = 'block';
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+
+          albumConfirm.addEventListener('click', () => {
+            const preview = document.getElementById('imagePreview');
+            const img = preview.querySelector('img');
+            if (img) {
+              appendMessage(`[发送图片] <img src="${img.src}" style="max-width: 200px; border-radius: 8px;" />`, 'me');
+              closeAlbumModal();
+            }
+          });
+
+          // Roll选项模态框
+          const waitReplyBtn = document.getElementById('waitReplyBtn');
+          const rollBtn = document.getElementById('rollBtn');
+
+          waitReplyBtn.addEventListener('click', () => {
+            closeRollOptions();
+            // 获取最后一条用户消息并请求AI回复
+            const lastUserMsg = [...currentMessages].reverse().find(m => m.role === 'user');
+            if (lastUserMsg) {
+              requestReply(lastUserMsg.content, { appendUser: false });
+            }
+          });
+
+          rollBtn.addEventListener('click', () => {
+            closeRollOptions();
+            // 删除最后一条AI回复并重新生成
+            if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].role === 'assistant') {
+              currentMessages.pop();
+              const messagesEl = document.getElementById('messages');
+              messagesEl.removeChild(messagesEl.lastChild);
+              saveChat(activeChatName);
+            }
+            // 获取最后一条用户消息并重新请求
+            const lastUserMsg = [...currentMessages].reverse().find(m => m.role === 'user');
+            if (lastUserMsg) {
+              requestReply(lastUserMsg.content, { appendUser: false });
+            }
+          });
+
+          // 聊天设置模态框
+          const chatSettingsCancel = document.getElementById('chatSettingsCancel');
+          const chatSettingsSave = document.getElementById('chatSettingsSave');
+
+          chatSettingsCancel.addEventListener('click', closeChatSettings);
+          chatSettingsSave.addEventListener('click', saveChatSettings);
+
+          // 模态框背景点击关闭
+          document.addEventListener('click', e => {
+            if (e.target.classList.contains('modal-backdrop')) {
+              e.target.classList.remove('active');
+            }
+          });
+        }
+
+        // 聊天设置相关函数
+        function loadChatSettings() {
+          if (activeChatName) {
+            const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
+            document.getElementById('chatCharName').value = activeChatName || '';
+            document.getElementById('chatCharAvatar').value = meta.avatar || '';
+            document.getElementById('chatCharPrompt').value = meta.prompt || '';
+          }
+          document.getElementById('chatUserName').value = localStorage.getItem('user-name') || '';
+          document.getElementById('chatUserAvatar').value = localStorage.getItem('user-avatar') || '';
+        }
+
+        function saveChatSettings() {
+          const charName = document.getElementById('chatCharName').value.trim();
+          const charAvatar = document.getElementById('chatCharAvatar').value.trim();
+          const charPrompt = document.getElementById('chatCharPrompt').value.trim();
+          const userName = document.getElementById('chatUserName').value.trim();
+          const userAvatar = document.getElementById('chatUserAvatar').value.trim();
+
+          // 保存用户信息
+          if (userName) localStorage.setItem('user-name', userName);
+          if (userAvatar) localStorage.setItem('user-avatar', userAvatar);
+
+          // 保存AI信息
+          if (activeChatName && charName) {
+            // 如果改了名字，需要迁移数据
+            if (charName !== activeChatName) {
+              const chatData = localStorage.getItem('chat:' + activeChatName);
+              const metaData = localStorage.getItem('chatmeta:' + activeChatName);
+              if (chatData) localStorage.setItem('chat:' + charName, chatData);
+
+              const meta = JSON.parse(metaData || '{}');
+              meta.avatar = charAvatar;
+              meta.prompt = charPrompt;
+              localStorage.setItem('chatmeta:' + charName, JSON.stringify(meta));
+
+              // 更新会话列表
+              const sessions = JSON.parse(localStorage.getItem('qq-sessions') || '[]');
+              const index = sessions.indexOf(activeChatName);
+              if (index >= 0) {
+                sessions[index] = charName;
+                localStorage.setItem('qq-sessions', JSON.stringify(sessions));
+              }
+
+              // 清理旧数据
+              localStorage.removeItem('chat:' + activeChatName);
+              localStorage.removeItem('chatmeta:' + activeChatName);
+
+              activeChatName = charName;
+            } else {
+              const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
+              meta.avatar = charAvatar;
+              meta.prompt = charPrompt;
+              localStorage.setItem('chatmeta:' + activeChatName, JSON.stringify(meta));
+            }
+
+            // 更新界面
+            document.getElementById('chatTitle').textContent = charName;
+            if (charAvatar) {
+              document.getElementById(
+                'contactAvatar',
+              ).innerHTML = `<img src="${charAvatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />`;
+            }
+          }
+
+          closeChatSettings();
+          renderUserDisplay();
+          refreshSessionListAvatars();
+          refreshMessageAvatars();
         }
 
         // 初始化新功能
         initWallpaperSettings();
         initWorldBook();
+        initNewModals();
+
+        // 修复聊天页面导航栏
+        function fixChatNavigation() {
+          const rightSection = document.querySelector('#chat-screen .nav .right-section');
+          if (rightSection) {
+            rightSection.innerHTML = `
+              <button class="action-btn" title="删除消息" onclick="toggleDeleteMode()" id="deleteBtn">
+                <img src="https://i.111666.best/image/8B6YbkOChM9r1Qh7j66M3O.png" alt="删除" style="width: 18px; height: 18px;" />
+              </button>
+              <button class="action-btn" title="聊天设置" onclick="openChatSettings()">⚙️</button>
+              <button class="action-btn" title="更多" onclick="showMoreOptions()">⋯</button>
+            `;
+          }
+        }
+
+        // 在DOM加载完成后执行修复
+        setTimeout(fixChatNavigation, 100);
       })();
     </script>
   </body>
