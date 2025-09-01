@@ -430,8 +430,79 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 12px;
-        border-bottom: 1px solid #eef3fb;
+        padding: 8px 12px;
+        background: linear-gradient(180deg, #ffffff, #f8fbff);
+        border-bottom: 1px solid #e8f0fb;
+        box-shadow: 0 2px 8px rgba(12, 40, 80, 0.05);
+      }
+      .chat-top .left-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .chat-top .center-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .chat-top .right-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .chat-top .contact-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a8aff, #0066cc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        overflow: hidden;
+      }
+      .chat-top .contact-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .chat-top .contact-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .chat-top .contact-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+      }
+      .chat-top .contact-status {
+        font-size: 12px;
+        color: #7f8c8d;
+        margin: 0;
+        margin-top: -2px;
+      }
+      .chat-top .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(26, 138, 255, 0.1);
+        color: #1a8aff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .chat-top .action-btn:hover {
+        background: rgba(26, 138, 255, 0.2);
+        transform: scale(1.1);
       }
       #chatTitle {
         font-size: 16px;
@@ -532,16 +603,18 @@
 
         <div id="chat-screen" class="screen" aria-hidden>
           <div class="nav chat-top">
-            <div style="display: flex; align-items: center; gap: 8px">
+            <div class="left-section">
               <button class="back-btn">◀</button>
+              <div class="contact-avatar" id="contactAvatar">AI</div>
+              <div class="contact-info">
+                <div class="contact-name" id="chatTitle">聊天</div>
+                <div class="contact-status" id="contactStatus">在线</div>
+              </div>
             </div>
-            <strong id="chatTitle">聊天</strong>
-            <div style="display: flex; align-items: center; gap: 10px">
-              <div id="userDisplay" style="display: flex; align-items: center; gap: 8px; margin-right: 6px"></div>
-              <button class="btn ghost" title="信息">i</button>
-              <button class="btn ghost" title="工具">🔧</button>
-              <button class="btn ghost" title="心愿">❤</button>
-              <button class="btn ghost" title="设置">⚙️</button>
+            <div class="right-section">
+              <button class="action-btn" title="语音通话" onclick="showTransferModal()">�</button>
+              <button class="action-btn" title="视频通话" onclick="showRedPacketModal()">📹</button>
+              <button class="action-btn" title="更多" onclick="showGroupChatModal()">⋯</button>
             </div>
           </div>
           <div class="page-content chat" id="chatPage">
@@ -549,11 +622,12 @@
           </div>
           <div class="chat-footer">
             <div class="attachment-icons">
-              <button class="btn ghost">+</button>
-              <button class="btn ghost">📷</button>
-              <button class="btn ghost">🖼️</button>
-              <button class="btn ghost">¥</button>
-              <button class="btn ghost">🎙️</button>
+              <button class="btn ghost" onclick="showGroupChatModal()" title="创建群聊">👥</button>
+              <button class="btn ghost" title="拍照">📷</button>
+              <button class="btn ghost" title="相册">🖼️</button>
+              <button class="btn ghost" onclick="showTransferModal()" title="转账">💰</button>
+              <button class="btn ghost" onclick="showRedPacketModal()" title="红包">🧧</button>
+              <button class="btn ghost" title="语音">🎙️</button>
             </div>
             <div class="chat-input-row">
               <input id="inputBox" placeholder="输入消息..." class="chat-input" />
@@ -733,6 +807,129 @@
         <div style="display: flex; justify-content: flex-end; gap: 8px">
           <button id="settingsCancel" class="btn ghost">取消</button>
           <button id="settingsSave" class="btn primary">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 转账模态框 -->
+    <div id="transferModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 300px;">
+        <div style="text-align: center; padding-bottom: 16px;">
+          <h3 style="margin: 0; color: #1a8aff;">💰 转账</h3>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">收款人</label>
+          <input
+            id="transferReceiver"
+            placeholder="输入收款人昵称"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">转账金额</label>
+          <input
+            id="transferAmount"
+            type="number"
+            placeholder="0.00"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px; font-size: 18px; text-align: center;"
+          />
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 13px; color: #666;">转账说明</label>
+          <input
+            id="transferNote"
+            placeholder="添加转账说明（可选）"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="transferCancel" class="btn ghost" style="flex: 1;">取消</button>
+          <button id="transferConfirm" class="btn primary" style="flex: 1;">确认转账</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 红包模态框 -->
+    <div id="redPacketModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 300px;">
+        <div style="text-align: center; padding-bottom: 16px;">
+          <h3 style="margin: 0; color: #ff4757;">🧧 发红包</h3>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">红包类型</label>
+          <select id="redPacketType" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;">
+            <option value="normal">普通红包</option>
+            <option value="lucky">拼手气红包</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">红包金额</label>
+          <input
+            id="redPacketAmount"
+            type="number"
+            placeholder="0.00"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px; font-size: 18px; text-align: center;"
+          />
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">红包个数</label>
+          <input
+            id="redPacketCount"
+            type="number"
+            value="1"
+            min="1"
+            max="100"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 13px; color: #666;">红包祝福</label>
+          <input
+            id="redPacketMessage"
+            placeholder="恭喜发财，大吉大利"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="redPacketCancel" class="btn ghost" style="flex: 1;">取消</button>
+          <button id="redPacketConfirm" class="btn primary" style="flex: 1;">发红包</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 群聊模态框 -->
+    <div id="groupChatModal" class="modal-backdrop">
+      <div class="modal" style="padding: 20px; max-width: 320px;">
+        <div style="text-align: center; padding-bottom: 16px;">
+          <h3 style="margin: 0; color: #1a8aff;">👥 创建群聊</h3>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">群聊名称</label>
+          <input
+            id="groupName"
+            placeholder="输入群聊名称"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 13px; color: #666;">群聊头像 URL（可选）</label>
+          <input
+            id="groupAvatar"
+            placeholder="https://... 或留空使用默认"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px;"
+          />
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 13px; color: #666;">群聊介绍</label>
+          <textarea
+            id="groupDescription"
+            placeholder="群聊介绍（可选）"
+            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #eef3fb; margin-top: 4px; min-height: 60px; resize: vertical;"
+          ></textarea>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="groupCancel" class="btn ghost" style="flex: 1;">取消</button>
+          <button id="groupConfirm" class="btn primary" style="flex: 1;">创建群聊</button>
         </div>
       </div>
     </div>
@@ -957,11 +1154,25 @@
           // avatar
           const avatarDiv = document.createElement('div');
           avatarDiv.className = 'avatar';
-          // 决定头像：用户优先使用 user-avatar，本地 dataURL 或 URL；助理使用 chatmeta.avatar 或 default-char-avatar
+          // 决定头像：优先使用当前会话的专属设置，然后是全局设置
           try {
             if (who === 'me') {
-              const ua = localStorage.getItem('user-avatar') || '';
-              const uname = localStorage.getItem('user-name') || '';
+              let ua = '';
+              let uname = '';
+              
+              // 优先使用当前会话的用户设置
+              if (activeChatName) {
+                try {
+                  const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
+                  ua = meta.userAvatar || '';
+                  uname = meta.userName || '';
+                } catch (e) {}
+              }
+              
+              // 如果当前会话没有设置，回退到全局设置
+              if (!ua) ua = localStorage.getItem('user-avatar') || '';
+              if (!uname) uname = localStorage.getItem('user-name') || '';
+              
               if (ua) {
                 const img = document.createElement('img');
                 img.src = ua;
@@ -971,20 +1182,26 @@
               }
             } else {
               let a = '';
+              let label = '';
+              
+              // 获取AI头像和名称
               if (activeChatName) {
                 try {
                   const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
-                  a = meta && meta.avatar;
+                  a = meta.avatar || '';
+                  label = meta.name || activeChatName;
                 } catch (e) {}
               }
+              
+              // 如果没有头像，回退到全局默认
               if (!a) a = localStorage.getItem('default-char-avatar') || '';
+              
               if (a) {
                 const img = document.createElement('img');
                 img.src = a;
                 avatarDiv.appendChild(img);
               } else {
-                const label = activeChatName && activeChatName[0] ? activeChatName[0] : 'AI';
-                avatarDiv.textContent = label;
+                avatarDiv.textContent = label && label[0] ? label[0] : 'AI';
               }
             }
           } catch (e) {
@@ -1182,35 +1399,49 @@
             const name = (charInput && charInput.value.trim()) || localStorage.getItem('default-char-name') || '汉堡堡';
             const list = document.getElementById('qq-session-list');
             if (!list) return;
+            
+            // 检查是否已存在同名会话
+            const sessions = JSON.parse(localStorage.getItem('qq-sessions') || '[]');
+            if (sessions.indexOf(name) !== -1) {
+              alert('会话名称已存在，请使用其他名称');
+              return;
+            }
+            
             const placeholder = list.querySelector('.placeholder-qq');
             if (placeholder) placeholder.remove();
             const el = document.createElement('div');
             el.className = 'qq-session';
-            // 如果为该 char 有存储的 avatar，使用图片；否则使用首字母
+            
+            // 为新会话创建独立的设置
             const metaKey = 'chatmeta:' + name;
-            let avatar = null;
+            const newMeta = {
+              name: name,
+              avatar: '', // 新会话不继承头像
+              prompt: '', // 新会话不继承提示
+              userName: '', // 新会话使用独立的用户设置
+              userAvatar: '', // 新会话使用独立的用户头像
+              isGroup: false
+            };
+            
             try {
-              const meta = JSON.parse(localStorage.getItem(metaKey) || '{}');
-              avatar = meta && meta.avatar;
-            } catch (e) {}
-            if (avatar) {
-              el.innerHTML = `<div class="qq-avatar"><img src="${avatar}" alt="avatar" style="width:100%;height:100%;border-radius:50%"/></div><div class="info"><div class="name">${name} <span class="meta">· 刚刚</span></div><div class="msg">与 ${name} 的对话</div></div><button class="qq-del">删除</button>`;
-            } else {
-              el.innerHTML = `<div class="qq-avatar">${
-                name[0] || '我'
-              }</div><div class="info"><div class="name">${name} <span class="meta">· 刚刚</span></div><div class="msg">与 ${name} 的对话</div></div><button class="qq-del">删除</button>`;
+              localStorage.setItem(metaKey, JSON.stringify(newMeta));
+              console.log(`[CREATE] 创建新会话: ${name}，独立设置已初始化`);
+            } catch (e) {
+              console.error('初始化会话设置失败', e);
             }
+            
+            // 渲染会话项（新会话使用首字母头像）
+            el.innerHTML = `<div class="qq-avatar">${
+              name[0] || '我'
+            }</div><div class="info"><div class="name">${name} <span class="meta">· 刚刚</span></div><div class="msg">与 ${name} 的对话</div></div><button class="qq-del">删除</button>`;
+            
             list.insertBefore(el, list.firstChild);
+            
             // persist sessions list
             try {
-              const sessions = Array.from(list.querySelectorAll('.qq-session'))
-                .map(s => {
-                  const n = s.querySelector('.name');
-                  return n ? n.childNodes[0].textContent.trim() : null;
-                })
-                .filter(Boolean);
+              sessions.push(name);
               localStorage.setItem('qq-sessions', JSON.stringify(sessions));
-              // 新会话创建时不自动继承默认 avatar/prompt，保持新会话为干净状态
+              
               // 刷新 UI
               try {
                 renderUserDisplay();
@@ -1267,12 +1498,38 @@
         function openSettingsModal() {
           if (!settingsModal) return;
           settingsModal.classList.add('active');
-          // 读取本地配置
-          settingsCharName.value = localStorage.getItem('default-char-name') || '';
-          settingsCharAvatar.value = localStorage.getItem('default-char-avatar') || '';
-          settingsCharPrompt.value = localStorage.getItem('default-char-prompt') || '';
-          settingsUserName.value = localStorage.getItem('user-name') || '';
-          settingsUserAvatar.value = localStorage.getItem('user-avatar') || '';
+          
+          // 根据当前会话加载设置
+          if (activeChatName) {
+            try {
+              // 加载当前会话的专属设置
+              const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
+              
+              settingsCharName.value = meta.name || activeChatName || '';
+              settingsCharAvatar.value = meta.avatar || '';
+              settingsCharPrompt.value = meta.prompt || '';
+              settingsUserName.value = meta.userName || localStorage.getItem('user-name') || '';
+              settingsUserAvatar.value = meta.userAvatar || localStorage.getItem('user-avatar') || '';
+              
+              console.log(`[SETTINGS] 已加载会话设置: ${activeChatName}`, meta);
+            } catch (e) {
+              console.error('加载会话设置失败，使用默认设置', e);
+              // fallback到全局设置
+              settingsCharName.value = localStorage.getItem('default-char-name') || '';
+              settingsCharAvatar.value = localStorage.getItem('default-char-avatar') || '';
+              settingsCharPrompt.value = localStorage.getItem('default-char-prompt') || '';
+              settingsUserName.value = localStorage.getItem('user-name') || '';
+              settingsUserAvatar.value = localStorage.getItem('user-avatar') || '';
+            }
+          } else {
+            // 没有激活会话时，加载全局默认设置
+            settingsCharName.value = localStorage.getItem('default-char-name') || '';
+            settingsCharAvatar.value = localStorage.getItem('default-char-avatar') || '';
+            settingsCharPrompt.value = localStorage.getItem('default-char-prompt') || '';
+            settingsUserName.value = localStorage.getItem('user-name') || '';
+            settingsUserAvatar.value = localStorage.getItem('user-avatar') || '';
+          }
+          
           // 预览已保存的头像（如果是 dataURL 或 URL）
           try {
             previewImageEl(document.getElementById('settingsCharAvatarPreview'), settingsCharAvatar.value);
@@ -1285,6 +1542,93 @@
         function closeSettingsModal() {
           if (!settingsModal) return;
           settingsModal.classList.remove('active');
+        }
+
+        // 转账模态框函数
+        function showTransferModal() {
+          const modal = document.getElementById('transferModal');
+          if (modal) {
+            modal.classList.add('active');
+            document.getElementById('transferReceiver').value = activeChatName || '';
+            document.getElementById('transferAmount').value = '';
+            document.getElementById('transferNote').value = '';
+          }
+        }
+
+        function closeTransferModal() {
+          const modal = document.getElementById('transferModal');
+          if (modal) modal.classList.remove('active');
+        }
+
+        // 红包模态框函数
+        function showRedPacketModal() {
+          const modal = document.getElementById('redPacketModal');
+          if (modal) {
+            modal.classList.add('active');
+            document.getElementById('redPacketAmount').value = '';
+            document.getElementById('redPacketCount').value = '1';
+            document.getElementById('redPacketMessage').value = '恭喜发财，大吉大利';
+          }
+        }
+
+        function closeRedPacketModal() {
+          const modal = document.getElementById('redPacketModal');
+          if (modal) modal.classList.remove('active');
+        }
+
+        // 群聊模态框函数
+        function showGroupChatModal() {
+          const modal = document.getElementById('groupChatModal');
+          if (modal) {
+            modal.classList.add('active');
+            document.getElementById('groupName').value = '';
+            document.getElementById('groupAvatar').value = '';
+            document.getElementById('groupDescription').value = '';
+          }
+        }
+
+        function closeGroupChatModal() {
+          const modal = document.getElementById('groupChatModal');
+          if (modal) modal.classList.remove('active');
+        }
+
+        // 更新聊天界面的联系人信息
+        function updateChatContactInfo() {
+          if (!activeChatName) return;
+          
+          try {
+            // 更新聊天标题
+            const chatTitle = document.getElementById('chatTitle');
+            const contactStatus = document.getElementById('contactStatus');
+            const contactAvatar = document.getElementById('contactAvatar');
+            
+            // 获取当前会话的设置
+            const meta = JSON.parse(localStorage.getItem('chatmeta:' + activeChatName) || '{}');
+            
+            // 更新标题
+            if (chatTitle) {
+              chatTitle.textContent = meta.name || activeChatName;
+            }
+            
+            // 更新状态
+            if (contactStatus) {
+              contactStatus.textContent = meta.isGroup ? '群聊' : '在线';
+            }
+            
+            // 更新头像
+            if (contactAvatar) {
+              contactAvatar.innerHTML = '';
+              if (meta.avatar) {
+                const img = document.createElement('img');
+                img.src = meta.avatar;
+                contactAvatar.appendChild(img);
+              } else {
+                contactAvatar.textContent = (meta.name || activeChatName)[0] || 'AI';
+              }
+            }
+          } catch (e) {
+            console.error('更新联系人信息失败', e);
+          }
         }
 
         // 调试用的短提示（用于确认事件被触发）
@@ -1316,12 +1660,41 @@
           settingsSaveBtn.addEventListener('click', () => {
             try {
               const cname = (settingsCharName && settingsCharName.value.trim()) || '';
-              // 始终写入 default-char-name（允许清空）
-              localStorage.setItem('default-char-name', cname);
-              localStorage.setItem('default-char-avatar', (settingsCharAvatar && settingsCharAvatar.value) || '');
-              localStorage.setItem('default-char-prompt', (settingsCharPrompt && settingsCharPrompt.value) || '');
-              localStorage.setItem('user-name', (settingsUserName && settingsUserName.value) || '');
-              localStorage.setItem('user-avatar', (settingsUserAvatar && settingsUserAvatar.value) || '');
+              const cavatar = (settingsCharAvatar && settingsCharAvatar.value) || '';
+              const cprompt = (settingsCharPrompt && settingsCharPrompt.value) || '';
+              const uname = (settingsUserName && settingsUserName.value) || '';
+              const uavatar = (settingsUserAvatar && settingsUserAvatar.value) || '';
+              
+              // 如果当前有激活的聊天会话，保存到会话专属设置
+              if (activeChatName) {
+                try {
+                  const metaKey = 'chatmeta:' + activeChatName;
+                  const meta = JSON.parse(localStorage.getItem(metaKey) || '{}');
+                  
+                  // 保存AI设置到当前会话
+                  if (cname) meta.name = cname;
+                  if (cavatar) meta.avatar = cavatar;
+                  if (cprompt) meta.prompt = cprompt;
+                  
+                  // 保存用户设置到当前会话
+                  meta.userName = uname;
+                  meta.userAvatar = uavatar;
+                  
+                  localStorage.setItem(metaKey, JSON.stringify(meta));
+                  console.log(`[SETTINGS] 已保存会话专属设置: ${activeChatName}`, meta);
+                } catch (e) {
+                  console.error('保存会话设置失败', e);
+                }
+              } else {
+                // 没有激活会话时，保存为全局默认设置
+                localStorage.setItem('default-char-name', cname);
+                localStorage.setItem('default-char-avatar', cavatar);
+                localStorage.setItem('default-char-prompt', cprompt);
+                localStorage.setItem('user-name', uname);
+                localStorage.setItem('user-avatar', uavatar);
+                console.log('[SETTINGS] 已保存全局默认设置');
+              }
+              
               // 简短提示
               const statusEl = document.getElementById('status');
               if (statusEl) {
@@ -1329,19 +1702,20 @@
                 statusEl.textContent = '已保存设置';
                 setTimeout(() => (statusEl.textContent = ''), 2000);
               }
-              // 调试输出：打印将要保存的全局设置
+              
+              // 更新当前显示
               try {
-                console.log('[SETTINGS] saving', {
-                  defaultCharName: localStorage.getItem('default-char-name'),
-                  defaultCharAvatar: localStorage.getItem('default-char-avatar'),
-                  defaultCharPrompt: localStorage.getItem('default-char-prompt'),
-                  userName: localStorage.getItem('user-name'),
-                  userAvatar: localStorage.getItem('user-avatar'),
-                });
-              } catch (e) {}
-              try {
-                showDebugToast('设置保存触发 (debug)');
-              } catch (e) {}
+                renderUserDisplay();
+                refreshSessionListAvatars();
+                refreshMessageAvatars();
+                
+                // 如果在聊天界面，更新联系人信息
+                if (activeChatName) {
+                  updateChatContactInfo();
+                }
+              } catch (e) {
+                console.error('更新显示失败', e);
+              }
               // 如果当前打开了会话并且修改了 AI 名称，尝试重命名当前会话并迁移数据
               try {
                 const newChar = (settingsCharName && settingsCharName.value && settingsCharName.value.trim()) || '';
@@ -1456,6 +1830,125 @@
           settingsModal.addEventListener('click', e => {
             if (e.target === settingsModal) closeSettingsModal();
           });
+
+        // 转账模态框事件监听器
+        const transferModal = document.getElementById('transferModal');
+        const transferConfirm = document.getElementById('transferConfirm');
+        const transferCancel = document.getElementById('transferCancel');
+
+        if (transferConfirm) {
+          transferConfirm.addEventListener('click', () => {
+            const receiver = document.getElementById('transferReceiver').value;
+            const amount = document.getElementById('transferAmount').value;
+            const note = document.getElementById('transferNote').value;
+            
+            if (!receiver || !amount) {
+              alert('请填写收款人和转账金额');
+              return;
+            }
+            
+            // 发送转账消息
+            const transferMsg = `💰 转账给 ${receiver}\n金额: ¥${amount}\n${note ? '说明: ' + note : ''}`;
+            appendMessage(transferMsg, 'me');
+            closeTransferModal();
+          });
+        }
+
+        if (transferCancel) transferCancel.addEventListener('click', closeTransferModal);
+        if (transferModal) {
+          transferModal.addEventListener('click', e => {
+            if (e.target === transferModal) closeTransferModal();
+          });
+        }
+
+        // 红包模态框事件监听器
+        const redPacketModal = document.getElementById('redPacketModal');
+        const redPacketConfirm = document.getElementById('redPacketConfirm');
+        const redPacketCancel = document.getElementById('redPacketCancel');
+
+        if (redPacketConfirm) {
+          redPacketConfirm.addEventListener('click', () => {
+            const type = document.getElementById('redPacketType').value;
+            const amount = document.getElementById('redPacketAmount').value;
+            const count = document.getElementById('redPacketCount').value;
+            const message = document.getElementById('redPacketMessage').value;
+            
+            if (!amount) {
+              alert('请填写红包金额');
+              return;
+            }
+            
+            // 发送红包消息
+            const typeText = type === 'lucky' ? '拼手气红包' : '普通红包';
+            const redPacketMsg = `🧧 ${typeText}\n金额: ¥${amount}\n个数: ${count}个\n祝福: ${message}`;
+            appendMessage(redPacketMsg, 'me');
+            closeRedPacketModal();
+          });
+        }
+
+        if (redPacketCancel) redPacketCancel.addEventListener('click', closeRedPacketModal);
+        if (redPacketModal) {
+          redPacketModal.addEventListener('click', e => {
+            if (e.target === redPacketModal) closeRedPacketModal();
+          });
+        }
+
+        // 群聊模态框事件监听器
+        const groupChatModal = document.getElementById('groupChatModal');
+        const groupConfirm = document.getElementById('groupConfirm');
+        const groupCancel = document.getElementById('groupCancel');
+
+        if (groupConfirm) {
+          groupConfirm.addEventListener('click', () => {
+            const name = document.getElementById('groupName').value;
+            const avatar = document.getElementById('groupAvatar').value;
+            const description = document.getElementById('groupDescription').value;
+            
+            if (!name) {
+              alert('请填写群聊名称');
+              return;
+            }
+            
+            // 创建群聊会话
+            try {
+              const sessions = JSON.parse(localStorage.getItem('qq-sessions') || '[]');
+              const groupName = `[群] ${name}`;
+              
+              if (sessions.indexOf(groupName) === -1) {
+                sessions.push(groupName);
+                localStorage.setItem('qq-sessions', JSON.stringify(sessions));
+                
+                // 保存群聊元数据
+                const groupMeta = {
+                  name: groupName,
+                  avatar: avatar || '',
+                  prompt: description || `这是一个名为"${name}"的群聊`,
+                  isGroup: true
+                };
+                localStorage.setItem('chatmeta:' + groupName, JSON.stringify(groupMeta));
+                
+                // 重新渲染会话列表
+                initQQSessionList();
+                
+                alert(`群聊"${name}"创建成功！`);
+              } else {
+                alert('群聊名称已存在');
+              }
+            } catch (e) {
+              console.error('创建群聊失败', e);
+              alert('创建群聊失败');
+            }
+            
+            closeGroupChatModal();
+          });
+        }
+
+        if (groupCancel) groupCancel.addEventListener('click', closeGroupChatModal);
+        if (groupChatModal) {
+          groupChatModal.addEventListener('click', e => {
+            if (e.target === groupChatModal) closeGroupChatModal();
+          });
+        }
 
         // 上传按钮与 file input 行为
         const settingsCharUploadBtn = document.getElementById('settingsCharUploadBtn');
@@ -1653,29 +2146,29 @@
         }
         // 首次渲染用户显示
         renderUserDisplay();
-        
+
         // 页面加载时初始化数据同步
         function initializeApp() {
           try {
             // 同步全局设置到所有会话
             syncGlobalSettingsToSessions(false); // 不强制覆盖已有设置
-            
+
             // 刷新所有头像显示
             refreshSessionListAvatars();
             refreshMessageAvatars();
-            
+
             // 重新渲染用户显示
             renderUserDisplay();
-            
+
             console.log('应用初始化完成，数据已同步');
           } catch (e) {
             console.error('应用初始化失败:', e);
           }
         }
-        
+
         // 页面加载完成后立即初始化
         initializeApp();
-        
+
         // 添加页面可见性变化监听器，确保切换回页面时数据同步
         document.addEventListener('visibilitychange', () => {
           if (!document.hidden) {
@@ -1683,12 +2176,12 @@
             setTimeout(initializeApp, 100);
           }
         });
-        
+
         // 添加窗口焦点监听器，确保窗口获得焦点时数据同步
         window.addEventListener('focus', () => {
           setTimeout(initializeApp, 100);
         });
-        
+
         // 在切换到聊天界面时，确保数据同步
         function openChat(name) {
           document.getElementById('app-row').style.display = 'none';
@@ -1711,11 +2204,12 @@
             // 渲染完成后滚动到底部
             messages.scrollTop = messages.scrollHeight;
           }
-          
+
           // 确保切换会话时头像和数据同步
           try {
             renderUserDisplay();
             refreshMessageAvatars();
+            updateChatContactInfo(); // 更新聊天界面的联系人信息
           } catch (e) {
             console.error('切换会话时同步数据失败:', e);
           }
