@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HANBAO — QQ 风格 演示 (修复版)</title>
+    <style>
+      :root {
+        --qq-blue: #1a8aff;
+        --nav-height: 56px;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: PingFang SC, Segoe UI, Roboto, 'Microsoft Yahei', sans-serif;
+        background: #1b4574;
+      }
+      .notch {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 18px;
+        width: 120px; /* 微调更短 */
+        height: 28px;
+        background: #000;
+        border-radius: 14px;
+      }
+      .phone {
+        width: 360px; /* 进一步收窄外壳，更贴合截图 */
+        height: 800px;
+        margin: 46px auto;
+        border-radius: 36px;
+        box-shadow: 0 18px 56px rgba(2, 40, 80, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.18); /* 更浅更自然的边框 */
+        background: linear-gradient(180deg, #ddf0ff, #eef7ff);
+      }
+      .wallpaper {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #cfe8ff, #eaf6ff);
+      }
+      .screen-content {
+        position: relative;
+        height: 100%;
+        padding-top: 84px;
+        box-sizing: border-box;
+      }
+      .watermark {
+        position: absolute;
+        right: 12px;
+        bottom: 18px;
+        color: rgba(0, 0, 0, 0.06);
+        font-weight: 700;
+        font-size: 22px;
+      }
+      .home-panel {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        top: 120px; /* 与截图保持一定下移，留出 notch 空白 */
+        bottom: 20px;
+        background: transparent; /* 透明，回到壁纸上 */
+        border-radius: 0; /* 无圆角卡片 */
+        box-shadow: none; /* 去掉白卡阴影 */
+        padding: 20px 18px 34px 18px; /* 保留内边距以维持图标位置 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .app-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 42px 34px; /* 更接近截图的较大垂直间距 */
+        justify-items: center;
+        align-items: center;
+        margin: 0;
+        width: 260px; /* 使图标行在卡片中更居中 */
+        margin-top: 6px;
+      }
+      .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+      }
+      .icon {
+        width: 96px; /* 略大一些，让白色图标卡更明显 */
+        height: 96px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff, #f7fbff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 18px 32px rgba(12, 40, 80, 0.06), inset 0 6px 14px rgba(0, 0, 0, 0.03);
+        padding: 12px;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+      .icon img {
+        width: 56px; /* 更明确的尺寸，保证图标清晰且居中 */
+        height: 56px;
+        object-fit: contain;
+        border-radius: 10px;
+        transition: transform 180ms ease;
+      }
+      .icon:hover {
+        transform: translateY(-6px) scale(1.04);
+        box-shadow: 0 28px 48px rgba(12, 40, 80, 0.12), inset 0 6px 14px rgba(0, 0, 0, 0.02);
+      }
+      .label {
+        margin-top: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #08313a;
+        text-align: center;
+      }
+      .screen {
+        position: absolute;
+        inset: 0;
+        padding-top: var(--nav-height);
+        display: none;
+        flex-direction: column;
+      }
+      .screen.active {
+        display: flex;
+      }
+      .nav {
+        height: var(--nav-height);
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+      }
+      .nav strong {
+        flex: 1;
+        text-align: center;
+      }
+      .page-content {
+        flex: 1;
+        overflow: auto;
+        padding: 18px;
+        background: #fff;
+        border-radius: 18px 18px 0 0;
+        margin: 0 12px 12px 12px;
+      }
+      .bubble {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: #f1f8ff;
+        max-width: 78%;
+        margin: 6px 0;
+      }
+      .bubble.me {
+        background: var(--qq-blue);
+        color: #fff;
+        margin-left: auto;
+      }
+      .input-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .chat-action-btn {
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid #e6eefb;
+        background: #fff;
+        cursor: pointer;
+      }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-backdrop.active {
+        display: flex;
+      }
+      .modal {
+        width: 92%;
+        max-width: 520px;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      textarea {
+        font-family: inherit;
+      }
+      @media (max-width: 480px) {
+        .phone {
+          width: 360px;
+          height: 780px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone" role="application" aria-label="HANBAO Demo Phone">
+      <div class="wallpaper"></div>
+      <div class="notch" aria-hidden></div>
+      <div class="screen-content">
+        <div class="watermark">HANBAO</div>
+        <div class="home-panel">
+          <div class="app-row" id="app-row">
+            <a class="app" href="#" data-screen="chat-screen"
+              ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d6a78c089_1756681895.webp" alt="聊天" /></div>
+              <div class="label">聊天</div></a
+            >
+            <a class="app" href="#" data-screen="qq-screen"
+              ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d5cee23f7_1756681678.webp" alt="QQ" /></div>
+              <div class="label">QQ</div></a
+            >
+            <a class="app" href="#" data-screen="api-screen"
+              ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d6a787f9c_1756681895.webp" alt="API" /></div>
+              <div class="label">API</div></a
+            >
+            <a class="app" href="#" data-screen="settings-screen"
+              ><div class="icon"><img src="https://img.cdn1.vip/i/68b4d6a7999b5_1756681895.webp" alt="设置" /></div>
+              <div class="label">设置</div></a
+            >
+          </div>
+        </div>
+
+        <div id="chat-screen" class="screen" aria-hidden>
+          <div class="nav"><button class="back-btn">返回</button><strong>聊天</strong></div>
+          <div class="page-content chat">
+            <div id="messages"><div class="bubble">欢迎（本地模拟）</div></div>
+            <div style="height: 10px"></div>
+            <div class="input-row">
+              <input
+                id="inputBox"
+                placeholder="输入消息..."
+                style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #eef3fb"
+              /><button id="sendBtn" class="chat-action-btn">发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

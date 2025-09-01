@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>API连接配置</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue',
+          'Noto Sans SC', Arial, sans-serif;
+        background: #181a20;
+        color: #eee;
+      }
+      .phone-frame {
+        max-width: 390px;
+        margin: 32px auto;
+        background: #222;
+        border-radius: 38px;
+        box-shadow: 0 8px 32px #0005;
+        border: 8px solid #222;
+        position: relative;
+        min-height: 700px;
+        padding: 0;
+      }
+      .phone-frame:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 8px;
+        background: #444;
+        border-radius: 8px;
+        margin-top: 8px;
+      }
+      .container {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 30px;
+        box-shadow: none;
+        padding: 24px 12px 12px 12px;
+        background: #23242a;
+      }
+      h2 {
+        margin: 0 0 18px 0;
+        font-size: 1.2em;
+        color: #ffd700;
+      }
+      label {
+        display: block;
+        margin: 18px 0 6px 0;
+        font-weight: 600;
+        color: #ffd700;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background: #181a20;
+        color: #ffd700;
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+      button {
+        margin-top: 18px;
+        padding: 10px 32px;
+        border-radius: 8px;
+        border: none;
+        background: #ffd700;
+        color: #23242a;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+      .back {
+        margin-bottom: 18px;
+        display: inline-block;
+        color: #ffd700;
+        text-decoration: none;
+        font-size: 1rem;
+      }
+      .status {
+        margin-top: 12px;
+        color: #00e676;
+        font-size: 1em;
+      }
+      .error {
+        color: #ff5252;
+      }
+      .models {
+        margin-top: 18px;
+        background: #181a20;
+        border-radius: 8px;
+        padding: 12px;
+        color: #eee;
+        font-size: 0.98em;
+      }
+      .models-title {
+        color: #ffd700;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+      .row > * {
+        flex: 1;
+      }
+      @media (max-width: 420px) {
+        .phone-frame {
+          max-width: 100vw;
+          border-radius: 24px;
+        }
+        .container {
+          border-radius: 18px;
+          padding: 12px 4px 4px 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <div class="container">
+        <a href="index.html" class="back">← 返回首页</a>
+        <h2>API连接配置</h2>
+        <form id="apiForm">
+          <label for="apiSource">聊天补全来源</label>
+          <select id="apiSource">
+            <option value="openai">自定义（兼容 OpenAI）</option>
+            <option value="gemini">Gemini AI studio</option>
+          </select>
+          <label for="apiUrl">自定义端点（基础 URL）</label>
+          <input id="apiUrl" type="url" placeholder="https://api.openai.com/v1" required />
+          <label for="apiKey" id="apiKeyLabel"
+            >自定义 API 密钥 <span style="color: #888; font-weight: 400">（可选）</span></label
+          >
+          <input id="apiKey" type="text" placeholder="sk-..." />
+          <button type="submit">连接</button>
+          <div class="status" id="status"></div>
+        </form>
+        <div class="models" id="models" style="display: none">
+          <div class="models-title">可用模型</div>
+          <select id="modelSelect" style="width: 100%; margin-bottom: 10px; display: none"></select>
+          <ul id="modelsList"></ul>
+          <button id="saveBtn" style="margin-top: 10px; display: none">保存配置</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById('apiForm');
+      const status = document.getElementById('status');
+      const modelsDiv = document.getElementById('models');
+      const modelsList = document.getElementById('modelsList');
+      const apiSource = document.getElementById('apiSource');
+      const apiUrl = document.getElementById('apiUrl');
+      const apiKey = document.getElementById('apiKey');
+      const apiKeyLabel = document.getElementById('apiKeyLabel');
+      const modelSelect = document.getElementById('modelSelect');
+      const saveBtn = document.getElementById('saveBtn');
+      // 自动填充
+      apiUrl.value = localStorage.getItem('api-url') || '';
+      apiKey.value = localStorage.getItem('api-key') || '';
+      // 切换 API 类型时只切换密钥提示，不自动填充端点
+      apiSource.addEventListener('change', function () {
+        if (apiSource.value === 'gemini') {
+          apiKey.placeholder = 'Google API Key';
+          apiKeyLabel.innerHTML = 'Google API Key <span style="color: #888; font-weight: 400">（必填）</span>';
+        } else {
+          apiKey.placeholder = 'sk-...';
+          apiKeyLabel.innerHTML = '自定义 API 密钥 <span style="color: #888; font-weight: 400">（可选）</span>';
+        }
+      });
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const url = apiUrl.value.trim().replace(/\/$/, '');
+        const key = apiKey.value.trim();
+        status.textContent = '正在连接...';
+        status.className = 'status';
+        modelsDiv.style.display = 'none';
+        modelsList.innerHTML = '';
+        modelSelect.style.display = 'none';
+        saveBtn.style.display = 'none';
+        try {
+          let models = [];
+          if (apiSource.value === 'gemini') {
+            // Gemini API: GET /v1beta/models?key=API_KEY
+            const res = await fetch(url + '/models?key=' + encodeURIComponent(key));
+            if (!res.ok) throw new Error('连接失败，HTTP状态码：' + res.status);
+            const data = await res.json();
+            models = data.models || [];
+            if (!Array.isArray(models)) models = [];
+            if (models.length === 0) throw new Error('未获取到模型列表');
+            status.textContent = '连接成功！';
+            modelsDiv.style.display = 'block';
+            modelsList.innerHTML = models.map(m => `<li>${m.name || m.id || JSON.stringify(m)}</li>`).join('');
+            // 下拉选择
+            modelSelect.innerHTML = models
+              .map(m => `<option value="${m.name || m.id}">${m.name || m.id}</option>`)
+              .join('');
+            modelSelect.style.display = 'block';
+            saveBtn.style.display = 'inline-block';
+          } else {
+            // OpenAI 兼容: GET /models
+            const res = await fetch(url + '/models', {
+              headers: key ? { Authorization: 'Bearer ' + key } : {},
+            });
+            if (!res.ok) throw new Error('连接失败，HTTP状态码：' + res.status);
+            const data = await res.json();
+            models = data.data || data.models || [];
+            if (!Array.isArray(models)) models = [];
+            if (models.length === 0) throw new Error('未获取到模型列表');
+            status.textContent = '连接成功！';
+            modelsDiv.style.display = 'block';
+            modelsList.innerHTML = models.map(m => `<li>${m.id || m.name || JSON.stringify(m)}</li>`).join('');
+            modelSelect.innerHTML = models
+              .map(m => `<option value="${m.id || m.name}">${m.id || m.name}</option>`)
+              .join('');
+            modelSelect.style.display = 'block';
+            saveBtn.style.display = 'inline-block';
+          }
+          localStorage.setItem('api-url', url);
+          localStorage.setItem('api-key', key);
+        } catch (err) {
+          status.textContent = err.message;
+          status.className = 'status error';
+        }
+      });
+      // 保存配置和选中模型
+      saveBtn.addEventListener('click', function () {
+        localStorage.setItem('api-url', apiUrl.value.trim());
+        localStorage.setItem('api-key', apiKey.value.trim());
+        localStorage.setItem('api-source', apiSource.value);
+        localStorage.setItem('api-model', modelSelect.value);
+        status.textContent = '已保存！';
+        status.className = 'status';
+      });
+      // 页面加载时自动填充选项
+      if (localStorage.getItem('api-source')) apiSource.value = localStorage.getItem('api-source');
+      if (localStorage.getItem('api-model')) {
+        modelSelect.value = localStorage.getItem('api-model');
+        modelSelect.style.display = 'block';
+        saveBtn.style.display = 'inline-block';
+      }
+    </script>
+  </body>
+</html>
