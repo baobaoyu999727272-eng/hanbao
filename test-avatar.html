@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头像测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .avatar-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #007AFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin: 10px 0;
+            background-size: cover;
+            background-position: center;
+        }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>头像功能测试</h1>
+    
+    <div class="test-section">
+        <h3>步骤1: 上传头像</h3>
+        <input type="file" id="avatarFile" accept="image/*">
+        <button onclick="uploadAvatar()">上传</button>
+        <div class="avatar-preview" id="avatarPreview">
+            <span id="avatarText">测</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>步骤2: 保存到localStorage</h3>
+        <button onclick="saveToStorage()">保存设置</button>
+        <button onclick="loadFromStorage()">加载设置</button>
+        <button onclick="clearStorage()">清除存储</button>
+    </div>
+
+    <div class="test-section">
+        <h3>步骤3: 查看存储状态</h3>
+        <button onclick="checkStorage()">检查存储</button>
+        <div class="log" id="storageLog"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>日志</h3>
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        let currentAvatarData = null;
+        
+        function log(message) {
+            const logEl = document.getElementById('log');
+            const now = new Date().toLocaleTimeString();
+            logEl.textContent += `[${now}] ${message}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(message);
+        }
+
+        function uploadAvatar() {
+            const fileInput = document.getElementById('avatarFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                log('请先选择文件');
+                return;
+            }
+            
+            log(`开始上传文件: ${file.name}, 大小: ${(file.size/1024/1024).toFixed(2)}MB`);
+            
+            if (!file.type.startsWith('image/')) {
+                log('错误: 不是图片文件');
+                return;
+            }
+            
+            if (file.size > 2 * 1024 * 1024) {
+                log('错误: 文件大小超过2MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentAvatarData = e.target.result;
+                log(`文件读取成功，Base64长度: ${currentAvatarData.length}`);
+                
+                // 更新预览
+                const preview = document.getElementById('avatarPreview');
+                const text = document.getElementById('avatarText');
+                preview.style.backgroundImage = `url(${currentAvatarData})`;
+                text.style.display = 'none';
+                
+                log('头像预览已更新');
+            };
+            
+            reader.onerror = function() {
+                log('错误: 文件读取失败');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function saveToStorage() {
+            if (!currentAvatarData) {
+                log('错误: 没有头像数据可保存');
+                return;
+            }
+            
+            const settings = {
+                avatarFile: currentAvatarData,
+                avatarText: '测',
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                const key = 'testAvatarSettings';
+                localStorage.setItem(key, JSON.stringify(settings));
+                log('设置保存成功');
+                checkStorage();
+            } catch (e) {
+                log(`保存失败: ${e.message}`);
+                if (e.name === 'QuotaExceededError') {
+                    log('存储空间不足，尝试清理...');
+                    // 尝试压缩或清理
+                    clearOldData();
+                }
+            }
+        }
+
+        function loadFromStorage() {
+            try {
+                const key = 'testAvatarSettings';
+                const saved = localStorage.getItem(key);
+                
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    log('设置加载成功');
+                    
+                    if (settings.avatarFile) {
+                        currentAvatarData = settings.avatarFile;
+                        const preview = document.getElementById('avatarPreview');
+                        const text = document.getElementById('avatarText');
+                        preview.style.backgroundImage = `url(${currentAvatarData})`;
+                        text.style.display = 'none';
+                        log('头像已恢复');
+                    }
+                } else {
+                    log('没有找到保存的设置');
+                }
+            } catch (e) {
+                log(`加载失败: ${e.message}`);
+            }
+        }
+
+        function clearStorage() {
+            try {
+                localStorage.removeItem('testAvatarSettings');
+                log('存储已清除');
+                
+                // 重置显示
+                const preview = document.getElementById('avatarPreview');
+                const text = document.getElementById('avatarText');
+                preview.style.backgroundImage = '';
+                text.style.display = 'flex';
+                currentAvatarData = null;
+                
+                checkStorage();
+            } catch (e) {
+                log(`清除失败: ${e.message}`);
+            }
+        }
+
+        function checkStorage() {
+            const logEl = document.getElementById('storageLog');
+            let output = '';
+            
+            // 检查存储使用情况
+            let totalSize = 0;
+            let itemCount = 0;
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    const value = localStorage.getItem(key);
+                    const size = new Blob([value]).size;
+                    totalSize += size;
+                    itemCount++;
+                    
+                    output += `${key}: ${(size/1024).toFixed(2)}KB\n`;
+                }
+            }
+            
+            output += `\n总计: ${itemCount}个项目, ${(totalSize/1024/1024).toFixed(2)}MB\n`;
+            output += `浏览器限制: 通常5-10MB\n`;
+            
+            // 检查测试项目
+            const testData = localStorage.getItem('testAvatarSettings');
+            if (testData) {
+                try {
+                    const parsed = JSON.parse(testData);
+                    output += `\n测试设置存在: ✓\n`;
+                    output += `头像数据: ${parsed.avatarFile ? '有' : '无'}\n`;
+                    output += `时间戳: ${parsed.timestamp}\n`;
+                } catch (e) {
+                    output += `\n测试设置损坏: ${e.message}\n`;
+                }
+            } else {
+                output += `\n测试设置: 不存在\n`;
+            }
+            
+            logEl.textContent = output;
+        }
+
+        function clearOldData() {
+            log('开始清理旧数据...');
+            let cleared = 0;
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    if (key.startsWith('chatHistory_') || key.startsWith('qqChatData')) {
+                        localStorage.removeItem(key);
+                        cleared++;
+                    }
+                }
+            }
+            
+            log(`清理了 ${cleared} 个旧数据项`);
+            checkStorage();
+        }
+
+        // 页面加载时检查存储状态
+        window.onload = function() {
+            log('页面加载完成');
+            checkStorage();
+            loadFromStorage();
+        };
+    </script>
+</body>
+</html>

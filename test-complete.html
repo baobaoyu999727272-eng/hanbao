@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头像保存测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-box { border: 1px solid #ccc; padding: 15px; margin: 10px 0; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: #007AFF; color: white; display: flex; align-items: center; justify-content: center; margin: 10px 0; background-size: cover; }
+        button { background: #007AFF; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin: 5px; cursor: pointer; }
+        .log { background: #f5f5f5; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>头像保存完整测试</h1>
+    
+    <div class="test-box">
+        <h3>步骤1: 上传头像</h3>
+        <input type="file" id="avatarFile" accept="image/*">
+        <button onclick="uploadAvatar()">上传头像</button>
+        <div class="avatar" id="avatarPreview">测</div>
+    </div>
+
+    <div class="test-box">
+        <h3>步骤2: 模拟聊天页面保存</h3>
+        <button onclick="simulateChatSave()">模拟聊天页面保存</button>
+        <button onclick="simulateChatLoad()">模拟聊天页面加载</button>
+        <div class="avatar" id="chatAvatar">AI</div>
+    </div>
+
+    <div class="test-box">
+        <h3>步骤3: 检查存储</h3>
+        <button onclick="checkLocalStorage()">检查localStorage</button>
+        <button onclick="clearAll()">清除所有数据</button>
+    </div>
+
+    <div class="test-box">
+        <h3>完整测试流程</h3>
+        <button onclick="runFullTest()">运行完整测试</button>
+        <div id="fullTestResult"></div>
+    </div>
+
+    <div class="test-box">
+        <h3>日志</h3>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        let uploadedAvatarData = null;
+        const testChatId = 'test_chat_' + Date.now();
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : '';
+            logEl.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+
+        function uploadAvatar() {
+            const file = document.getElementById('avatarFile').files[0];
+            if (!file) {
+                log('请先选择文件', 'error');
+                return;
+            }
+
+            log('开始上传文件: ' + file.name);
+            
+            if (!file.type.startsWith('image/')) {
+                log('文件类型错误: ' + file.type, 'error');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                log('文件过大: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedAvatarData = e.target.result;
+                log('文件读取成功，大小: ' + (uploadedAvatarData.length / 1024).toFixed(2) + 'KB', 'success');
+                
+                // 更新预览
+                document.getElementById('avatarPreview').style.backgroundImage = `url(${uploadedAvatarData})`;
+                log('头像预览已更新', 'success');
+            };
+            
+            reader.onerror = function() {
+                log('文件读取失败', 'error');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function simulateChatSave() {
+            if (!uploadedAvatarData) {
+                log('没有头像数据可保存', 'error');
+                return;
+            }
+
+            log('开始模拟聊天页面保存...');
+
+            // 模拟 currentChatInfo
+            const currentChatInfo = {
+                id: testChatId,
+                name: '测试聊天',
+                type: 'ai'
+            };
+
+            // 模拟 currentSettings
+            const currentSettings = {
+                userName: '测试用户',
+                userAvatar: '测',
+                userAvatarFile: null,
+                aiName: '测试AI',
+                aiAvatar: 'AI',
+                aiAvatarFile: uploadedAvatarData,
+                autoSave: true,
+                soundEnabled: true,
+                worldBookEnabled: true
+            };
+
+            log('创建设置对象完成');
+
+            try {
+                const settingsKey = `chatSettings_${currentChatInfo.id}`;
+                const dataToSave = JSON.stringify(currentSettings);
+                
+                log('尝试保存到键: ' + settingsKey);
+                log('数据大小: ' + (dataToSave.length / 1024).toFixed(2) + 'KB');
+                
+                localStorage.setItem(settingsKey, dataToSave);
+                log('保存成功！', 'success');
+                
+                // 验证保存
+                const verification = localStorage.getItem(settingsKey);
+                if (verification) {
+                    log('验证保存成功', 'success');
+                } else {
+                    log('验证失败：数据未找到', 'error');
+                }
+                
+            } catch (e) {
+                log('保存失败: ' + e.message, 'error');
+                if (e.name === 'QuotaExceededError') {
+                    log('存储空间不足，尝试清理...', 'warning');
+                    clearOldData();
+                }
+            }
+        }
+
+        function simulateChatLoad() {
+            log('开始模拟聊天页面加载...');
+
+            const settingsKey = `chatSettings_${testChatId}`;
+            const saved = localStorage.getItem(settingsKey);
+
+            if (!saved) {
+                log('没有找到保存的设置', 'error');
+                return;
+            }
+
+            try {
+                const settings = JSON.parse(saved);
+                log('设置解析成功', 'success');
+                
+                if (settings.aiAvatarFile) {
+                    log('找到AI头像文件，大小: ' + (settings.aiAvatarFile.length / 1024).toFixed(2) + 'KB', 'success');
+                    
+                    // 更新显示
+                    document.getElementById('chatAvatar').style.backgroundImage = `url(${settings.aiAvatarFile})`;
+                    log('头像显示已更新', 'success');
+                } else {
+                    log('没有找到AI头像文件', 'warning');
+                }
+                
+                log('模拟加载完成', 'success');
+                
+            } catch (e) {
+                log('设置解析失败: ' + e.message, 'error');
+            }
+        }
+
+        function checkLocalStorage() {
+            log('检查localStorage状态...');
+            
+            let totalSize = 0;
+            let itemCount = 0;
+            let testItemFound = false;
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    const value = localStorage.getItem(key);
+                    const size = new Blob([value]).size;
+                    totalSize += size;
+                    itemCount++;
+                    
+                    if (key.includes(testChatId)) {
+                        testItemFound = true;
+                        log(`测试数据: ${key} (${(size/1024).toFixed(2)}KB)`, 'success');
+                    }
+                }
+            }
+            
+            log(`总计: ${itemCount}个项目, ${(totalSize/1024/1024).toFixed(2)}MB`);
+            
+            if (testItemFound) {
+                log('找到测试数据', 'success');
+            } else {
+                log('未找到测试数据', 'warning');
+            }
+        }
+
+        function clearOldData() {
+            let cleared = 0;
+            for (let key in localStorage) {
+                if (key.startsWith('chatHistory_') || key.startsWith('qqChatData')) {
+                    localStorage.removeItem(key);
+                    cleared++;
+                }
+            }
+            log(`清理了${cleared}个旧数据项`, 'success');
+        }
+
+        function clearAll() {
+            localStorage.clear();
+            log('所有数据已清除', 'success');
+        }
+
+        function runFullTest() {
+            const resultEl = document.getElementById('fullTestResult');
+            resultEl.innerHTML = '<h4>运行完整测试...</h4>';
+            
+            log('=== 开始完整测试 ===', 'success');
+            
+            // 检查是否有上传的头像
+            if (!uploadedAvatarData) {
+                log('测试失败：请先上传头像', 'error');
+                resultEl.innerHTML = '<h4 style="color: red;">测试失败：请先上传头像</h4>';
+                return;
+            }
+            
+            // 第一步：保存
+            log('步骤1: 保存数据');
+            simulateChatSave();
+            
+            // 第二步：清除内存中的数据（模拟页面刷新）
+            setTimeout(() => {
+                log('步骤2: 模拟页面刷新（清除内存数据）');
+                uploadedAvatarData = null;
+                document.getElementById('avatarPreview').style.backgroundImage = '';
+                document.getElementById('chatAvatar').style.backgroundImage = '';
+                
+                // 第三步：加载数据
+                setTimeout(() => {
+                    log('步骤3: 加载数据');
+                    simulateChatLoad();
+                    
+                    // 第四步：验证结果
+                    setTimeout(() => {
+                        log('步骤4: 验证结果');
+                        const chatAvatarEl = document.getElementById('chatAvatar');
+                        const hasBackground = chatAvatarEl.style.backgroundImage !== '';
+                        
+                        if (hasBackground) {
+                            log('=== 完整测试成功！头像保存和加载正常 ===', 'success');
+                            resultEl.innerHTML = '<h4 style="color: green;">✅ 测试成功！头像功能正常</h4>';
+                        } else {
+                            log('=== 完整测试失败！头像未能正确加载 ===', 'error');
+                            resultEl.innerHTML = '<h4 style="color: red;">❌ 测试失败！头像未能正确加载</h4>';
+                        }
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            log('页面初始化完成');
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>
